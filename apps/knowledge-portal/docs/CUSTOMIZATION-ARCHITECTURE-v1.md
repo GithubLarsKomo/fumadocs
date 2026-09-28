@@ -18,13 +18,13 @@ The preferred customization order is:
 
 ## Source-of-Truth boundaries
 
-| Layer | Role | Authority |
-| --- | --- | --- |
-| Git-backed Child Brain / owning repository | durable promoted knowledge | canonical for its scope |
-| Google Drive | Drive-owned source/evidence documents | canonical for those source documents |
-| Adaptive Brain / Neo4j | derived retrieval and adaptive projection | non-canonical |
-| Fumadocs knowledge portal | browser delivery, navigation and search | non-canonical |
-| Search index / search facade | discovery | non-canonical |
+| Layer                                      | Role                                      | Authority                            |
+| ------------------------------------------ | ----------------------------------------- | ------------------------------------ |
+| Git-backed Child Brain / owning repository | durable promoted knowledge                | canonical for its scope              |
+| Google Drive                               | Drive-owned source/evidence documents     | canonical for those source documents |
+| Adaptive Brain / Neo4j                     | derived retrieval and adaptive projection | non-canonical                        |
+| Fumadocs knowledge portal                  | browser delivery, navigation and search   | non-canonical                        |
+| Search index / search facade               | discovery                                 | non-canonical                        |
 
 A search hit is a navigation aid, never an authority upgrade. Graph results must retain a route back to their canonical source.
 
