@@ -6,8 +6,8 @@ const labels: Record<KnowledgeSourceClass, string> = {
   derived: 'Derived',
 };
 
-export function BrainSwitcher({ activeId }: { activeId?: string }) {
-  const items = getBrainNavigation();
+export async function BrainSwitcher({ activeId }: { activeId?: string }) {
+  const items = await getBrainNavigation();
 
   return (
     <section aria-label="Wissensbereiche" className="kp-boundary-card">
