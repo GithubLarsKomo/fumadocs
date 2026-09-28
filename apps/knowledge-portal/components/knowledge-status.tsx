@@ -18,6 +18,7 @@ interface KnowledgeStatusProps {
   sourceType?: string;
   contentKind?: GoogleDriveContentKind;
   modifiedTime?: string;
+  sourceRevision?: string;
 }
 
 export function KnowledgeStatus({
@@ -25,8 +26,10 @@ export function KnowledgeStatus({
   sourceType,
   contentKind,
   modifiedTime,
+  sourceRevision,
 }: KnowledgeStatusProps) {
   const date = modifiedTime?.slice(0, 10);
+  const revision = sourceRevision?.slice(0, 12);
 
   return (
     <div className="kp-status-row" aria-label="Quellenstatus">
@@ -36,11 +39,13 @@ export function KnowledgeStatus({
       {sourceType ? <span className="kp-status-detail">{formatSourceType(sourceType)}</span> : null}
       {contentKind ? <span className="kp-status-detail">{contentLabels[contentKind]}</span> : null}
       {date ? <span className="kp-status-detail">Stand {date}</span> : null}
+      {revision ? <span className="kp-status-detail">Revision {revision}</span> : null}
     </div>
   );
 }
 
 function formatSourceType(sourceType: string): string {
   if (sourceType === 'google-drive') return 'Google Drive';
+  if (sourceType === 'github-brain') return 'GitHub Child Brain';
   return sourceType;
 }
