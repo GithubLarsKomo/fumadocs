@@ -2,6 +2,7 @@ import type { SortedResult } from 'fumadocs-core/search';
 import { createFromSource } from 'fumadocs-core/search/server';
 import { getDriveSource } from '@/lib/drive-source';
 import { searchBrainGraph } from '@/lib/search/brain-graph';
+import { searchGitHubBrains } from '@/lib/search/github-brains';
 
 const driveSearch = createFromSource(getDriveSource);
 
@@ -12,15 +13,21 @@ export async function GET(request: Request) {
 
   if (!query) return Response.json([]);
 
-  const [driveResults, graphResults] = await Promise.all([
+  const [driveResults, brainResults, graphResults] = await Promise.all([
     driveSearch.search(query, { limit }),
+    searchGitHubBrains(query, limit).catch((error) => {
+      console.error('Federated Child Brain search failed; returning other sources.', error);
+      return [] as SortedResult[];
+    }),
     searchBrainGraph(query, limit).catch((error) => {
-      console.error('Optional Brain Graph search failed; returning Drive results only.', error);
+      console.error('Optional Brain Graph search failed; returning canonical sources only.', error);
       return [] as SortedResult[];
     }),
   ]);
 
-  return Response.json(deduplicate([...driveResults, ...graphResults]).slice(0, limit));
+  return Response.json(
+    deduplicate([...driveResults, ...brainResults, ...graphResults]).slice(0, limit),
+  );
 }
 
 function normalizeLimit(value: string | null): number {
