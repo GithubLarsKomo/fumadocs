@@ -12,18 +12,26 @@ function getRootFolderId(): string {
   return folderId;
 }
 
-const driveSource = googleDrive({
-  rootFolderId: getRootFolderId(),
-  driveId: process.env.GOOGLE_SHARED_DRIVE_ID || undefined,
-  getAccessToken: getGoogleDriveAccessToken,
-  sourceClass: 'evidence',
-  staleTime: 60_000,
-});
+let loader: ReturnType<typeof dynamicLoader> | undefined;
 
-const driveLoader = dynamicLoader(driveSource, {
-  baseUrl: '/drive',
-});
+function getDriveLoader() {
+  if (loader) return loader;
+
+  const driveSource = googleDrive({
+    rootFolderId: getRootFolderId(),
+    driveId: process.env.GOOGLE_SHARED_DRIVE_ID || undefined,
+    getAccessToken: getGoogleDriveAccessToken,
+    sourceClass: 'evidence',
+    staleTime: 60_000,
+  });
+
+  loader = dynamicLoader(driveSource, {
+    baseUrl: '/drive',
+  });
+
+  return loader;
+}
 
 export async function getDriveSource() {
-  return driveLoader.get();
+  return getDriveLoader().get();
 }
