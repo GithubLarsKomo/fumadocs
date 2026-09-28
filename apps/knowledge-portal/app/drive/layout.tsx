@@ -1,4 +1,5 @@
 import { DocsLayout } from 'fumadocs-ui/layouts/docs';
+import { BrainSwitcher, SourceBoundaryNote } from '@/components/brain-switcher';
 import { getDriveSource } from '@/lib/drive-source';
 import { baseOptions } from '@/lib/layout.shared';
 
@@ -12,7 +13,14 @@ export default async function DriveLayout({
   const source = await getDriveSource();
 
   return (
-    <DocsLayout tree={source.getPageTree()} {...baseOptions()}>
+    <DocsLayout
+      tree={source.getPageTree()}
+      {...baseOptions()}
+      sidebar={{
+        banner: <BrainSwitcher activeId="drive" />,
+        footer: <SourceBoundaryNote />,
+      }}
+    >
       {children}
     </DocsLayout>
   );
