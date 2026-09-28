@@ -2,12 +2,7 @@ import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { Markdown } from 'fumadocs-core/content/md';
 import { getTableOfContents } from 'fumadocs-core/content/toc';
-import {
-  DocsBody,
-  DocsDescription,
-  DocsPage,
-  DocsTitle,
-} from 'fumadocs-ui/layouts/docs/page';
+import { DocsBody, DocsDescription, DocsPage, DocsTitle } from 'fumadocs-ui/layouts/docs/page';
 import { getDriveSource } from '@/lib/drive-source';
 
 export const dynamic = 'force-dynamic';
@@ -29,8 +24,8 @@ export default async function DrivePage({ params }: DrivePageProps) {
         <DocsBody>
           <p>Wähle links ein Dokument aus dem freigegebenen Google-Drive-Bereich aus.</p>
           <p>
-            Google Drive bleibt Eigentümer der Quelldokumente. Eine Übernahme in kanonisches
-            Wissen erfolgt nicht automatisch.
+            Google Drive bleibt Eigentümer der Quelldokumente. Eine Übernahme in kanonisches Wissen
+            erfolgt nicht automatisch.
           </p>
         </DocsBody>
       </DocsPage>
@@ -48,9 +43,7 @@ export default async function DrivePage({ params }: DrivePageProps) {
   return (
     <DocsPage toc={toc}>
       <DocsTitle>{page.data.title}</DocsTitle>
-      {page.data.description ? (
-        <DocsDescription>{page.data.description}</DocsDescription>
-      ) : null}
+      {page.data.description ? <DocsDescription>{page.data.description}</DocsDescription> : null}
       <DocsBody>
         <Markdown>{loaded.content}</Markdown>
       </DocsBody>
