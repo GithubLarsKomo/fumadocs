@@ -1,3 +1,5 @@
+import { getEnabledFederationBrains } from '@/lib/federation';
+
 export type KnowledgeSourceClass = 'canonical' | 'evidence' | 'derived';
 
 export interface BrainNavigationItem {
@@ -38,7 +40,28 @@ function isNavigationItem(value: unknown): value is BrainNavigationItem {
   );
 }
 
-export function getBrainNavigation(): BrainNavigationItem[] {
+export async function getBrainNavigation(): Promise<BrainNavigationItem[]> {
+  const configured = parseConfiguredItems();
+  let federated: BrainNavigationItem[] = [];
+
+  try {
+    federated = (await getEnabledFederationBrains()).map((brain) => ({
+      id: brain.brainId,
+      label: brain.label,
+      url: `/brains/${brain.brainId}`,
+      sourceClass: 'canonical' as const,
+      description: brain.scope,
+    }));
+  } catch (error) {
+    console.error('Federation navigation is unavailable; showing configured sources only.', error);
+  }
+
+  const deduplicated = new Map<string, BrainNavigationItem>();
+  for (const item of [...configured, ...federated]) deduplicated.set(item.id, item);
+  return Array.from(deduplicated.values());
+}
+
+function parseConfiguredItems(): BrainNavigationItem[] {
   const configured = process.env.KNOWLEDGE_PORTAL_BRAINS_JSON;
   if (!configured) return defaultItems;
 
