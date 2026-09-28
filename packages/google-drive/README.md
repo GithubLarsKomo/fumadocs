@@ -134,4 +134,3 @@ The smoke test deliberately fails unless the configured folder contains at least
 It prints only non-secret source metadata and content length. The access token and folder ID are never written to the repository or included in page data.
 
 A successful live smoke test proves folder listing, file classification, Google Docs Markdown export, lazy page loading, and evidence-page discovery against the real Google Drive API. It does not test end-user authentication UI or automatic Git promotion.
-
