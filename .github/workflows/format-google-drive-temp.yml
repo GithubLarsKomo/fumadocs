@@ -1,0 +1,46 @@
+name: Format Google Drive package (temporary)
+
+on:
+  push:
+    branches:
+      - feat/google-drive-source-phase0
+
+permissions:
+  contents: write
+
+jobs:
+  format:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          ref: feat/google-drive-source-phase0
+
+      - uses: pnpm/action-setup@v4
+
+      - uses: actions/setup-node@v6
+        with:
+          node-version: 24
+          cache: pnpm
+
+      - run: pnpm i --frozen-lockfile
+
+      - name: Format new package
+        run: >-
+          pnpm exec oxfmt
+          packages/google-drive/README.md
+          packages/google-drive/package.json
+          packages/google-drive/src/index.ts
+          packages/google-drive/test/source.test.ts
+
+      - name: Commit formatting if needed
+        run: |
+          if git diff --quiet; then
+            echo "No formatting changes needed."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add packages/google-drive
+          git commit -m "Format Google Drive integration"
+          git push origin HEAD:feat/google-drive-source-phase0
