@@ -2,12 +2,7 @@ import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { Markdown } from 'fumadocs-core/content/md';
 import { getTableOfContents } from 'fumadocs-core/content/toc';
-import {
-  DocsBody,
-  DocsDescription,
-  DocsPage,
-  DocsTitle,
-} from 'fumadocs-ui/layouts/docs/page';
+import { DocsBody, DocsDescription, DocsPage, DocsTitle } from 'fumadocs-ui/layouts/docs/page';
 import { getDriveSource } from '@/lib/drive-source';
 
 export const dynamic = 'force-dynamic';
@@ -31,9 +26,7 @@ export default async function DrivePage({ params }: DrivePageProps) {
   return (
     <DocsPage toc={toc}>
       <DocsTitle>{page.data.title}</DocsTitle>
-      {page.data.description ? (
-        <DocsDescription>{page.data.description}</DocsDescription>
-      ) : null}
+      {page.data.description ? <DocsDescription>{page.data.description}</DocsDescription> : null}
       <DocsBody>
         <Markdown>{loaded.content}</Markdown>
       </DocsBody>
@@ -41,9 +34,7 @@ export default async function DrivePage({ params }: DrivePageProps) {
   );
 }
 
-export async function generateMetadata({
-  params,
-}: DrivePageProps): Promise<Metadata> {
+export async function generateMetadata({ params }: DrivePageProps): Promise<Metadata> {
   const { slug = [] } = await params;
   const source = await getDriveSource();
   const page = source.getPage(slug);
