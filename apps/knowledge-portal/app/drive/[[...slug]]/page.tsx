@@ -2,7 +2,12 @@ import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { Markdown } from 'fumadocs-core/content/md';
 import { getTableOfContents } from 'fumadocs-core/content/toc';
-import { DocsBody, DocsDescription, DocsPage, DocsTitle } from 'fumadocs-ui/layouts/docs/page';
+import {
+  DocsBody,
+  DocsDescription,
+  DocsPage,
+  DocsTitle,
+} from 'fumadocs-ui/layouts/docs/page';
 import { getDriveSource } from '@/lib/drive-source';
 
 export const dynamic = 'force-dynamic';
@@ -15,6 +20,23 @@ interface DrivePageProps {
 
 export default async function DrivePage({ params }: DrivePageProps) {
   const { slug = [] } = await params;
+
+  if (slug.length === 0) {
+    return (
+      <DocsPage toc={[]}>
+        <DocsTitle>Knowledge Portal</DocsTitle>
+        <DocsDescription>Read-only Zugriff auf freigegebene Wissensquellen.</DocsDescription>
+        <DocsBody>
+          <p>Wähle links ein Dokument aus dem freigegebenen Google-Drive-Bereich aus.</p>
+          <p>
+            Google Drive bleibt Eigentümer der Quelldokumente. Eine Übernahme in kanonisches
+            Wissen erfolgt nicht automatisch.
+          </p>
+        </DocsBody>
+      </DocsPage>
+    );
+  }
+
   const source = await getDriveSource();
   const page = source.getPage(slug);
 
@@ -26,7 +48,9 @@ export default async function DrivePage({ params }: DrivePageProps) {
   return (
     <DocsPage toc={toc}>
       <DocsTitle>{page.data.title}</DocsTitle>
-      {page.data.description ? <DocsDescription>{page.data.description}</DocsDescription> : null}
+      {page.data.description ? (
+        <DocsDescription>{page.data.description}</DocsDescription>
+      ) : null}
       <DocsBody>
         <Markdown>{loaded.content}</Markdown>
       </DocsBody>
@@ -36,6 +60,14 @@ export default async function DrivePage({ params }: DrivePageProps) {
 
 export async function generateMetadata({ params }: DrivePageProps): Promise<Metadata> {
   const { slug = [] } = await params;
+
+  if (slug.length === 0) {
+    return {
+      title: 'Knowledge Portal',
+      description: 'Read-only Zugriff auf freigegebene Wissensquellen.',
+    };
+  }
+
   const source = await getDriveSource();
   const page = source.getPage(slug);
 
