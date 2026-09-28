@@ -38,9 +38,5 @@ export function encodeRepository(repository: string): string {
 }
 
 export function encodeGitHubPath(path: string): string {
-  return path
-    .split('/')
-    .filter(Boolean)
-    .map(encodeURIComponent)
-    .join('/');
+  return path.split('/').filter(Boolean).map(encodeURIComponent).join('/');
 }
