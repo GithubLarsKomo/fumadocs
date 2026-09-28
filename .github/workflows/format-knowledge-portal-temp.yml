@@ -1,0 +1,39 @@
+name: Format Knowledge Portal (temporary)
+
+on:
+  push:
+    branches:
+      - feat/knowledge-portal-phase1
+
+permissions:
+  contents: write
+
+jobs:
+  format:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          ref: feat/knowledge-portal-phase1
+
+      - uses: pnpm/action-setup@v4
+
+      - uses: actions/setup-node@v6
+        with:
+          node-version: 24
+          cache: pnpm
+
+      - run: pnpm install --frozen-lockfile
+
+      - run: pnpm exec oxfmt 'apps/knowledge-portal/app/drive/[[...slug]]/page.tsx'
+
+      - name: Commit formatting if needed
+        run: |
+          if git diff --quiet; then
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add 'apps/knowledge-portal/app/drive/[[...slug]]/page.tsx'
+          git commit -m "Format knowledge portal landing page"
+          git push origin HEAD:feat/knowledge-portal-phase1
