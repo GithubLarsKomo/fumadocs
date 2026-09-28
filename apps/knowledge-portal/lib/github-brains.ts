@@ -2,7 +2,9 @@ import { dynamicLoader } from 'fumadocs-core/source';
 import { getEnabledFederationBrain, type FederationBrain } from '@/lib/federation';
 import { githubBrainSource } from '@/lib/github-brain-source';
 
-const loaders = new Map<string, ReturnType<typeof dynamicLoader>>();
+type GitHubBrainLoader = ReturnType<typeof createLoader>;
+
+const loaders = new Map<string, GitHubBrainLoader>();
 
 export async function getGitHubBrainSource(brainId: string) {
   const brain = await getEnabledFederationBrain(brainId);
@@ -17,7 +19,7 @@ export async function getRequiredGitHubBrainSource(brainId: string) {
   return source;
 }
 
-function getLoader(brain: FederationBrain) {
+function getLoader(brain: FederationBrain): GitHubBrainLoader {
   const key = [
     brain.brainId,
     brain.repository,
@@ -29,9 +31,13 @@ function getLoader(brain: FederationBrain) {
   let loader = loaders.get(key);
   if (loader) return loader;
 
-  loader = dynamicLoader(githubBrainSource(brain), {
-    baseUrl: `/brains/${brain.brainId}`,
-  });
+  loader = createLoader(brain);
   loaders.set(key, loader);
   return loader;
+}
+
+function createLoader(brain: FederationBrain) {
+  return dynamicLoader(githubBrainSource(brain), {
+    baseUrl: `/brains/${brain.brainId}`,
+  });
 }
