@@ -1,0 +1,42 @@
+name: Bootstrap Knowledge Portal (temporary)
+
+on:
+  push:
+    branches:
+      - feat/knowledge-portal-phase1
+
+permissions:
+  contents: write
+
+jobs:
+  bootstrap:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          ref: feat/knowledge-portal-phase1
+
+      - uses: pnpm/action-setup@v4
+
+      - uses: actions/setup-node@v6
+        with:
+          node-version: 24
+          cache: pnpm
+
+      - name: Update workspace lockfile
+        run: pnpm install --no-frozen-lockfile
+
+      - name: Format portal files
+        run: pnpm exec oxfmt apps/knowledge-portal
+
+      - name: Commit generated workspace changes
+        run: |
+          if git diff --quiet; then
+            echo "No generated changes."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add pnpm-lock.yaml apps/knowledge-portal
+          git commit -m "Normalize knowledge portal workspace"
+          git push origin HEAD:feat/knowledge-portal-phase1
