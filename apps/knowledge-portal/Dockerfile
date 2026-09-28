@@ -7,7 +7,7 @@ WORKDIR /app
 COPY . .
 
 RUN pnpm install --frozen-lockfile
-RUN pnpm --filter fumadocs-google-drive build
+RUN pnpm build --filter=./packages/*
 RUN pnpm --filter knowledge-portal build
 
 FROM node:24-alpine AS runner
