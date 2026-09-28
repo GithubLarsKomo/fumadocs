@@ -76,7 +76,7 @@ function isSearchItem(value: unknown): value is BrainGraphSearchItem {
 }
 
 function isNavigableUrl(url: string | undefined): url is string {
-  return Boolean(
-    url && (url.startsWith('/') || url.startsWith('https://') || url.startsWith('http://')),
-  );
+  if (!url) return false;
+
+  return ['/', 'https://', 'http://'].some((prefix) => url.startsWith(prefix));
 }
