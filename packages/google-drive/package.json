@@ -1,0 +1,46 @@
+{
+  "name": "@fumadocs/google-drive",
+  "version": "0.1.0",
+  "description": "Google Drive content source for Fumadocs",
+  "keywords": [
+    "Docs",
+    "Fumadocs",
+    "Google Drive"
+  ],
+  "homepage": "https://fumadocs.dev",
+  "license": "MIT",
+  "author": "Fuma Nama",
+  "repository": "github:fuma-nama/fumadocs",
+  "files": [
+    "dist"
+  ],
+  "type": "module",
+  "sideEffects": false,
+  "exports": {
+    ".": "./dist/index.js",
+    "./package.json": "./package.json"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "scripts": {
+    "build": "tsdown",
+    "clean": "rimraf dist",
+    "dev": "tsdown --watch --clean false",
+    "lint": "oxlint .",
+    "test": "vitest run",
+    "types:check": "tsc --noEmit",
+    "smoke:live": "node scripts/live-smoke.mjs"
+  },
+  "devDependencies": {
+    "@types/node": "26.6.1",
+    "fumadocs-core": "workspace:*",
+    "tsconfig": "workspace:*",
+    "tsdown": "0.23.0",
+    "typescript": "^7.0.2",
+    "vitest": "^5.0.1"
+  },
+  "peerDependencies": {
+    "fumadocs-core": "^16.15.0"
+  }
+}
