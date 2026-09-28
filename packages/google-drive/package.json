@@ -1,0 +1,41 @@
+{
+  "name": "fumadocs-google-drive",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Read-only Google Drive content source for Fumadocs",
+  "keywords": [
+    "Docs",
+    "Fumadocs",
+    "Google Drive"
+  ],
+  "homepage": "https://github.com/GithubLarsKomo/fumadocs",
+  "license": "MIT",
+  "type": "module",
+  "sideEffects": false,
+  "files": [
+    "dist"
+  ],
+  "exports": {
+    ".": "./dist/index.js",
+    "./package.json": "./package.json"
+  },
+  "scripts": {
+    "build": "tsdown",
+    "clean": "rimraf dist",
+    "dev": "tsdown --watch --clean false",
+    "lint": "oxlint .",
+    "test": "vitest run",
+    "types:check": "tsc --noEmit"
+  },
+  "devDependencies": {
+    "@types/node": "26.6.1",
+    "fumadocs-core": "workspace:*",
+    "tsconfig": "workspace:*",
+    "tsdown": "0.23.0",
+    "typescript": "^7.0.2",
+    "vitest": "^5.0.1"
+  },
+  "peerDependencies": {
+    "fumadocs-core": "^16.15.0"
+  }
+}
