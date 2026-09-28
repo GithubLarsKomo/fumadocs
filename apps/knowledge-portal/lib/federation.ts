@@ -100,7 +100,7 @@ async function readRegistry(
 }
 
 function normalizeRootPath(value: string): string {
-  return value === '.' ? '' : value.replace(/^\\/+|\\/+$/g, '');
+  return value === '.' ? '' : value.split('/').filter(Boolean).join('/');
 }
 
 function parseAllowlist(value: string | undefined): Set<string> {
