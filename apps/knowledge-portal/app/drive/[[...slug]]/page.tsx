@@ -3,6 +3,7 @@ import { notFound } from 'next/navigation';
 import { Markdown } from 'fumadocs-core/content/md';
 import { getTableOfContents } from 'fumadocs-core/content/toc';
 import { DocsBody, DocsDescription, DocsPage, DocsTitle } from 'fumadocs-ui/layouts/docs/page';
+import { KnowledgeStatus } from '@/components/knowledge-status';
 import { getDriveSource } from '@/lib/drive-source';
 
 export const dynamic = 'force-dynamic';
@@ -21,6 +22,7 @@ export default async function DrivePage({ params }: DrivePageProps) {
       <DocsPage toc={[]}>
         <DocsTitle>Knowledge Portal</DocsTitle>
         <DocsDescription>Read-only Zugriff auf freigegebene Wissensquellen.</DocsDescription>
+        <KnowledgeStatus sourceClass="evidence" sourceType="google-drive" />
         <DocsBody>
           <p>Wähle links ein Dokument aus dem freigegebenen Google-Drive-Bereich aus.</p>
           <p>
@@ -44,6 +46,12 @@ export default async function DrivePage({ params }: DrivePageProps) {
     <DocsPage toc={toc}>
       <DocsTitle>{page.data.title}</DocsTitle>
       {page.data.description ? <DocsDescription>{page.data.description}</DocsDescription> : null}
+      <KnowledgeStatus
+        sourceClass="evidence"
+        sourceType={page.data.sourceType}
+        contentKind={page.data.contentKind}
+        modifiedTime={page.data.driveFile.modifiedTime}
+      />
       <DocsBody>
         <Markdown>{loaded.content}</Markdown>
       </DocsBody>
