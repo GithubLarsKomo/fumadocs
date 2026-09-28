@@ -2,6 +2,8 @@
 
 Experimental read-only Google Drive content source for the `GithubLarsKomo/fumadocs` fork.
 
+Phase 0 is intentionally read-only: it projects Drive-owned source documents into Fumadocs without creating a second writable knowledge store.
+
 ## Phase 0 scope
 
 - recurse one configured Google Drive folder;
