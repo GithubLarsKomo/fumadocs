@@ -1,5 +1,5 @@
 import type { Metadata } from 'next';
-import { RootProvider } from 'fumadocs-ui/provider/next';
+import { KnowledgePortalProvider } from '@/components/provider';
 import './global.css';
 
 export const metadata: Metadata = {
@@ -18,7 +18,7 @@ export default function RootLayout({
   return (
     <html lang="de" suppressHydrationWarning>
       <body className="flex min-h-screen flex-col">
-        <RootProvider>{children}</RootProvider>
+        <KnowledgePortalProvider>{children}</KnowledgePortalProvider>
       </body>
     </html>
   );
