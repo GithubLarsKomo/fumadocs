@@ -84,18 +84,18 @@ Set `driveId` when the root folder belongs to a Shared Drive. The source then li
 
 ## Content handling
 
-| Drive item | Phase 0 behavior |
-| --- | --- |
-| Google Doc | export to Markdown |
-| `.md`, `.markdown` | direct download |
-| `.txt` | direct download |
-| PDF | evidence page + Drive link |
-| DOCX | evidence page + Drive link |
-| XLSX | evidence page + Drive link |
-| PPTX | evidence page + Drive link |
-| Google Sheet | evidence page + Drive link |
-| Google Slides | evidence page + Drive link |
-| other types | ignored |
+| Drive item         | Phase 0 behavior           |
+| ------------------ | -------------------------- |
+| Google Doc         | export to Markdown         |
+| `.md`, `.markdown` | direct download            |
+| `.txt`             | direct download            |
+| PDF                | evidence page + Drive link |
+| DOCX               | evidence page + Drive link |
+| XLSX               | evidence page + Drive link |
+| PPTX               | evidence page + Drive link |
+| Google Sheet       | evidence page + Drive link |
+| Google Slides      | evidence page + Drive link |
+| other types        | ignored                    |
 
 Google Workspace exports are subject to Google Drive API export limits.
 

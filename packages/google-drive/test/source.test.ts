@@ -63,10 +63,7 @@ describe('googleDrive', () => {
         });
       }
 
-      if (
-        url.pathname === '/drive/v3/files' &&
-        url.searchParams.get('q')?.includes("'folder-1'")
-      ) {
+      if (url.pathname === '/drive/v3/files' && url.searchParams.get('q')?.includes("'folder-1'")) {
         return json({
           files: [
             {
@@ -108,9 +105,9 @@ describe('googleDrive', () => {
 
     const files = await source.files();
 
-    expect(files.some((file) => file.type === 'meta' && file.path === 'architecture/meta.json')).toBe(
-      true,
-    );
+    expect(
+      files.some((file) => file.type === 'meta' && file.path === 'architecture/meta.json'),
+    ).toBe(true);
 
     const doc = asPage(files, 'Decision Record');
     const markdown = asPage(files, 'README.md');

@@ -125,7 +125,8 @@ export function googleDrive(options: GoogleDriveOptions): DynamicSource<GoogleDr
 
   async function request(url: string): Promise<Response> {
     const accessToken = await options.getAccessToken();
-    if (!accessToken) throw new Error('Google Drive access token provider returned an empty token.');
+    if (!accessToken)
+      throw new Error('Google Drive access token provider returned an empty token.');
 
     const response = await fetcher(url, {
       headers: {
@@ -198,9 +199,7 @@ export function googleDrive(options: GoogleDriveOptions): DynamicSource<GoogleDr
         alt: 'media',
         supportsAllDrives: 'true',
       });
-      content = await requestText(
-        `${apiBase}/files/${encodeURIComponent(file.id)}?${params}`,
-      );
+      content = await requestText(`${apiBase}/files/${encodeURIComponent(file.id)}?${params}`);
     } else {
       content = evidenceMarkdown(file);
     }
@@ -454,7 +453,12 @@ function slugify(value: string): string {
 }
 
 function shortId(id: string): string {
-  return id.replace(/[^a-zA-Z0-9]/g, '').slice(0, 8).toLowerCase() || 'item';
+  return (
+    id
+      .replace(/[^a-zA-Z0-9]/g, '')
+      .slice(0, 8)
+      .toLowerCase() || 'item'
+  );
 }
 
 function extensionOf(name: string): string {
