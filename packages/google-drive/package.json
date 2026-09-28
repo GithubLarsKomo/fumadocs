@@ -25,7 +25,8 @@
     "dev": "tsdown --watch --clean false",
     "lint": "oxlint .",
     "test": "vitest run",
-    "types:check": "tsc --noEmit"
+    "types:check": "tsc --noEmit",
+    "smoke:live": "node scripts/live-smoke.mjs"
   },
   "devDependencies": {
     "@types/node": "26.6.1",

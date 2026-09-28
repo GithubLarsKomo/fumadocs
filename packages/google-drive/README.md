@@ -111,3 +111,26 @@ Phase 0 does **not**:
 - implement per-file authorization beyond what the Google identity can read.
 
 Those belong to later, separately governed layers.
+
+## Live Drive smoke test
+
+After building the package, a real Drive folder can be validated without adding any user-specific Drive IDs or credentials to the repository:
+
+```bash
+pnpm --filter fumadocs-google-drive build
+
+GOOGLE_DRIVE_FOLDER_ID="<folder-id>" \
+GOOGLE_DRIVE_ACCESS_TOKEN="<short-lived-access-token>" \
+pnpm --filter fumadocs-google-drive smoke:live
+```
+
+For a Shared Drive, also set `GOOGLE_SHARED_DRIVE_ID`.
+
+The smoke test deliberately fails unless the configured folder contains at least:
+
+- one Google Doc, Markdown file, or text file that can be loaded as content;
+- one supported evidence item such as Google Sheets, Google Slides, PDF, DOCX, XLSX, or PPTX.
+
+It prints only non-secret source metadata and content length. The access token and folder ID are never written to the repository or included in page data.
+
+A successful live smoke test proves folder listing, file classification, Google Docs Markdown export, lazy page loading, and evidence-page discovery against the real Google Drive API. It does not test end-user authentication UI or automatic Git promotion.
