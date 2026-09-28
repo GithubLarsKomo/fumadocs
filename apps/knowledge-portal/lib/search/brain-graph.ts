@@ -38,7 +38,7 @@ export async function searchBrainGraph(query: string, limit: number): Promise<So
   }
 
   const payload = (await response.json()) as BrainGraphSearchResponse | BrainGraphSearchItem[];
-  const items = Array.isArray(payload) ? payload : payload.results ?? [];
+  const items = Array.isArray(payload) ? payload : (payload.results ?? []);
 
   return items.flatMap((item): SortedResult[] => {
     if (!isSearchItem(item) || !isNavigableUrl(item.url)) return [];
