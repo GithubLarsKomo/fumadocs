@@ -58,7 +58,7 @@ export async function getEnabledFederationBrains(): Promise<FederationBrain[]> {
       repository: brain.repository,
       defaultBranch: brain.defaultBranch,
       projectMemoryRoot: brain.projectMemoryRoot,
-      rootPath: dirname(brain.projectMemoryRoot),
+      rootPath: normalizeRootPath(dirname(brain.projectMemoryRoot)),
     }))
     .sort((a, b) => a.label.localeCompare(b.label));
 
@@ -97,6 +97,10 @@ async function readRegistry(
   }
 
   return parsed as FederationRegistry;
+}
+
+function normalizeRootPath(value: string): string {
+  return value === '.' ? '' : value.replace(/^\\/+|\\/+$/g, '');
 }
 
 function parseAllowlist(value: string | undefined): Set<string> {
