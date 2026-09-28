@@ -78,11 +78,11 @@ export function githubBrainSource(brain: FederationBrain): DynamicSource<GitHubB
     return cached;
   }
 
-  async function listDirectory(path: string): Promise<GitHubDirectoryEntry[]> {
+  async function listDirectory(path: string, revision: string): Promise<GitHubDirectoryEntry[]> {
     const encodedPath = encodeGitHubPath(path);
     const endpoint = encodedPath
-      ? `/repos/${repo}/contents/${encodedPath}?ref=${encodeURIComponent(brain.defaultBranch)}`
-      : `/repos/${repo}/contents?ref=${encodeURIComponent(brain.defaultBranch)}`;
+      ? `/repos/${repo}/contents/${encodedPath}?ref=${encodeURIComponent(revision)}`
+      : `/repos/${repo}/contents?ref=${encodeURIComponent(revision)}`;
     const response = await githubJson<GitHubDirectoryEntry[] | GitHubDirectoryEntry>(endpoint);
 
     if (!Array.isArray(response)) {
@@ -164,7 +164,7 @@ export function githubBrainSource(brain: FederationBrain): DynamicSource<GitHubB
         if (visited.has(currentPath)) return;
         visited.add(currentPath);
 
-        const entries = await listDirectory(currentPath);
+        const entries = await listDirectory(currentPath, revision);
 
         for (const entry of entries) {
           if (entry.type === 'dir') {
