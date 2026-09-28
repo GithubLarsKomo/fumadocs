@@ -2,6 +2,10 @@
 @import 'fumadocs-ui/css/neutral.css';
 @import 'fumadocs-ui/css/preset.css';
 
+:root {
+  --kp-panel-radius: 0.75rem;
+}
+
 html {
   scrollbar-gutter: stable;
 }
@@ -9,4 +13,80 @@ html {
 html > body[data-scroll-locked] {
   margin-right: 0 !important;
   --removed-body-scroll-bar-size: 0 !important;
+}
+
+.kp-boundary-card {
+  border: 1px solid var(--color-fd-border);
+  border-radius: var(--kp-panel-radius);
+  background: color-mix(in oklab, var(--color-fd-card) 94%, var(--color-fd-primary) 6%);
+  padding: 0.75rem;
+}
+
+.kp-section-kicker {
+  font-size: 0.6875rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-fd-muted-foreground);
+}
+
+.kp-brain-link {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.625rem;
+  border-radius: 0.55rem;
+  padding: 0.55rem 0.625rem;
+  text-decoration: none;
+  transition:
+    background-color 120ms ease,
+    color 120ms ease;
+}
+
+.kp-brain-link:hover,
+.kp-brain-link[data-active='true'] {
+  background: color-mix(in oklab, var(--color-fd-accent) 72%, transparent);
+}
+
+.kp-status-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.4rem;
+  margin-block: 0.75rem 1.25rem;
+}
+
+.kp-source-badge,
+.kp-status-detail {
+  display: inline-flex;
+  align-items: center;
+  min-height: 1.5rem;
+  border: 1px solid var(--color-fd-border);
+  border-radius: 999px;
+  padding-inline: 0.5rem;
+  font-size: 0.6875rem;
+  line-height: 1.25rem;
+}
+
+.kp-source-badge {
+  font-weight: 700;
+}
+
+.kp-source-badge[data-source-class='canonical'] {
+  border-color: color-mix(in oklab, var(--color-fd-primary) 55%, var(--color-fd-border));
+  background: color-mix(in oklab, var(--color-fd-primary) 12%, transparent);
+  color: var(--color-fd-primary);
+}
+
+.kp-source-badge[data-source-class='evidence'] {
+  background: var(--color-fd-secondary);
+  color: var(--color-fd-secondary-foreground);
+}
+
+.kp-source-badge[data-source-class='derived'] {
+  border-style: dashed;
+  color: var(--color-fd-muted-foreground);
+}
+
+.kp-status-detail {
+  color: var(--color-fd-muted-foreground);
 }
