@@ -12,15 +12,15 @@ The portal treats important human-facing binary and visual artifacts as first-cl
 
 ## Storage boundary
 
-| Content class | Authoritative owner | Portal behavior |
-| --- | --- | --- |
-| Project/domain knowledge | owning GitHub Child Brain | render as canonical read-only pages |
-| Workflow/governance contracts | Skillz | render/project as canonical framework knowledge |
-| Executable code, tests, CI and schemas | producer repository | remain in source control |
+| Content class                                                                 | Authoritative owner           | Portal behavior                                              |
+| ----------------------------------------------------------------------------- | ----------------------------- | ------------------------------------------------------------ |
+| Project/domain knowledge                                                      | owning GitHub Child Brain     | render as canonical read-only pages                          |
+| Workflow/governance contracts                                                 | Skillz                        | render/project as canonical framework knowledge              |
+| Executable code, tests, CI and schemas                                        | producer repository           | remain in source control                                     |
 | Important figures, images, PDFs, decks, sheets and human-facing binary assets | connected Google Drive folder | expose as Drive evidence/asset pages linking to the original |
-| Controlled external records | controlled source system | retain original there; reference only where appropriate |
-| Adaptive ranking/candidates | Neo4j runtime | derived retrieval only |
-| Portal UI | Fumadocs Knowledge Portal | read-only delivery layer |
+| Controlled external records                                                   | controlled source system      | retain original there; reference only where appropriate      |
+| Adaptive ranking/candidates                                                   | Neo4j runtime                 | derived retrieval only                                       |
+| Portal UI                                                                     | Fumadocs Knowledge Portal     | read-only delivery layer                                     |
 
 ## Connected Drive root
 
