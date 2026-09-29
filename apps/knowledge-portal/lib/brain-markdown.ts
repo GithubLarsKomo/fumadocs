@@ -1,18 +1,25 @@
 import { dirname, join, normalize } from 'node:path/posix';
 
+interface BrainMarkdownSourceContext {
+  repository: string;
+  revision: string;
+  projectRoot: string;
+}
+
 interface RewriteBrainMarkdownLinksOptions {
   brainId: string;
   currentPath: string;
+  source?: BrainMarkdownSourceContext;
 }
 
 export function rewriteBrainMarkdownLinks(
   markdown: string,
-  { brainId, currentPath }: RewriteBrainMarkdownLinksOptions,
+  options: RewriteBrainMarkdownLinksOptions,
 ): string {
   const inline = markdown.replace(
-    /(\[[^\]]*\]\()([^)]*)(\))/g,
+    /(!?\[[^\]]*\]\()([^)]*)(\))/g,
     (match, prefix: string, destination: string, suffix: string) => {
-      const rewritten = rewriteDestination(destination, brainId, currentPath);
+      const rewritten = rewriteDestination(destination, options, prefix.startsWith('!['));
       return rewritten === destination ? match : `${prefix}${rewritten}${suffix}`;
     },
   );
@@ -20,7 +27,7 @@ export function rewriteBrainMarkdownLinks(
   return inline.replace(
     /^(\s*\[[^\]]+\]:\s*)(\S+)(.*)$/gm,
     (match, prefix: string, destination: string, suffix: string) => {
-      const rewritten = rewriteTarget(destination, brainId, currentPath);
+      const rewritten = rewriteTarget(destination, options, isImagePath(destination));
       return rewritten === destination ? match : `${prefix}${rewritten}${suffix}`;
     },
   );
@@ -47,7 +54,11 @@ export function slugifyBrainSegment(value: string): string {
     .replace(/-{2,}/g, '-');
 }
 
-function rewriteDestination(destination: string, brainId: string, currentPath: string): string {
+function rewriteDestination(
+  destination: string,
+  options: RewriteBrainMarkdownLinksOptions,
+  isImage: boolean,
+): string {
   const leading = destination.match(/^\s*/)?.[0] ?? '';
   const trailing = destination.match(/\s*$/)?.[0] ?? '';
   const trimmed = destination.slice(leading.length, destination.length - trailing.length);
@@ -59,7 +70,7 @@ function rewriteDestination(destination: string, brainId: string, currentPath: s
     if (end === -1) return destination;
 
     const target = trimmed.slice(1, end);
-    const rewritten = rewriteTarget(target, brainId, currentPath);
+    const rewritten = rewriteTarget(target, options, isImage);
     if (rewritten === target) return destination;
 
     return `${leading}<${rewritten}>${trimmed.slice(end + 1)}${trailing}`;
@@ -68,40 +79,95 @@ function rewriteDestination(destination: string, brainId: string, currentPath: s
   const separator = trimmed.search(/\s/);
   const target = separator === -1 ? trimmed : trimmed.slice(0, separator);
   const rest = separator === -1 ? '' : trimmed.slice(separator);
-  const rewritten = rewriteTarget(target, brainId, currentPath);
+  const rewritten = rewriteTarget(target, options, isImage);
 
   if (rewritten === target) return destination;
   return `${leading}${rewritten}${rest}${trailing}`;
 }
 
-function rewriteTarget(target: string, brainId: string, currentPath: string): string {
-  if (!isRelativeMarkdownTarget(target)) return target;
+function rewriteTarget(
+  target: string,
+  options: RewriteBrainMarkdownLinksOptions,
+  isImage: boolean,
+): string {
+  if (!isRelativeTarget(target)) return target;
 
   const splitAt = firstSuffixIndex(target);
   const rawPath = splitAt === -1 ? target : target.slice(0, splitAt);
   const suffix = splitAt === -1 ? '' : target.slice(splitAt);
+  if (!rawPath) return target;
+
   const decodedPath = safeDecodeURIComponent(rawPath);
-  const resolved = normalize(join(dirname(currentPath), decodedPath));
+  const projectedPath = normalize(join(dirname(options.currentPath), decodedPath));
+  const insideProjectedRoot = projectedPath !== '..' && !projectedPath.startsWith('../');
 
-  if (resolved === '..' || resolved.startsWith('../')) return target;
+  if (insideProjectedRoot && isMarkdownPath(decodedPath)) {
+    const slugs = brainSlugsFor(projectedPath);
+    const base = `/brains/${encodeURIComponent(options.brainId)}`;
+    const route = slugs.length > 0 ? `${base}/${slugs.map(encodeURIComponent).join('/')}` : base;
 
-  const slugs = brainSlugsFor(resolved);
-  const base = `/brains/${encodeURIComponent(brainId)}`;
-  const route = slugs.length > 0 ? `${base}/${slugs.map(encodeURIComponent).join('/')}` : base;
+    return `${route}${suffix}`;
+  }
 
-  return `${route}${suffix}`;
+  const sourceUrl = sourceUrlFor(decodedPath, options, isImage);
+  return sourceUrl ? `${sourceUrl}${suffix}` : target;
 }
 
-function isRelativeMarkdownTarget(target: string): boolean {
+function sourceUrlFor(
+  decodedPath: string,
+  options: RewriteBrainMarkdownLinksOptions,
+  isImage: boolean,
+): string | undefined {
+  if (!options.source) return undefined;
+
+  const repositoryPath = normalize(
+    join(options.source.projectRoot, dirname(options.currentPath), decodedPath),
+  );
+
+  if (
+    !repositoryPath ||
+    repositoryPath === '..' ||
+    repositoryPath.startsWith('../') ||
+    repositoryPath.startsWith('/')
+  ) {
+    return undefined;
+  }
+
+  const repository = encodePath(options.source.repository);
+  const revision = encodeURIComponent(options.source.revision);
+  const path = encodePath(repositoryPath);
+
+  if (isImage || isImagePath(repositoryPath)) {
+    return `https://raw.githubusercontent.com/${repository}/${revision}/${path}`;
+  }
+
+  return `https://github.com/${repository}/blob/${revision}/${path}`;
+}
+
+function isRelativeTarget(target: string): boolean {
   if (!target || target.startsWith('#') || target.startsWith('/') || target.startsWith('//')) {
     return false;
   }
 
-  if (/^[a-z][a-z\d+.-]*:/i.test(target)) return false;
+  return !/^[a-z][a-z\d+.-]*:/i.test(target);
+}
 
-  const splitAt = firstSuffixIndex(target);
-  const path = splitAt === -1 ? target : target.slice(0, splitAt);
-  return /\.(?:md|mdx)$/i.test(path);
+function isMarkdownPath(value: string): boolean {
+  return /\.(?:md|mdx)$/i.test(value);
+}
+
+function isImagePath(value: string): boolean {
+  const splitAt = firstSuffixIndex(value);
+  const path = splitAt === -1 ? value : value.slice(0, splitAt);
+  return /\.(?:avif|gif|jpe?g|png|svg|webp)$/i.test(path);
+}
+
+function encodePath(value: string): string {
+  return value
+    .split('/')
+    .filter(Boolean)
+    .map((segment) => encodeURIComponent(segment))
+    .join('/');
 }
 
 function firstSuffixIndex(value: string): number {
