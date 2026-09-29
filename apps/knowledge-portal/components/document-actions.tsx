@@ -22,7 +22,12 @@ export function DocumentActions({ sourceUrl }: DocumentActionsProps) {
   return (
     <div className="kp-document-actions" aria-label="Dokumentaktionen">
       {sourceUrl ? (
-        <a className="kp-document-action" href={sourceUrl} target="_blank" rel="noreferrer noopener">
+        <a
+          className="kp-document-action"
+          href={sourceUrl}
+          target="_blank"
+          rel="noreferrer noopener"
+        >
           <SourceIcon />
           <span>Quelle</span>
         </a>
