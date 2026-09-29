@@ -14,7 +14,10 @@ export async function GET(request: Request) {
   if (!query) return Response.json([]);
 
   const [driveResults, brainResults, graphResults] = await Promise.all([
-    driveSearch.search(query, { limit }),
+    driveSearch.search(query, { limit }).catch((error) => {
+      console.error('Google Drive search failed; returning other sources.', error);
+      return [] as SortedResult[];
+    }),
     searchGitHubBrains(query, limit).catch((error) => {
       console.error('Federated Child Brain search failed; returning other sources.', error);
       return [] as SortedResult[];

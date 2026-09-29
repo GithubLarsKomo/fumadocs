@@ -10,6 +10,7 @@ Architecture:
 - [Customization Architecture v2](docs/CUSTOMIZATION-ARCHITECTURE-v2.md)
 - [Customization Architecture v3](docs/CUSTOMIZATION-ARCHITECTURE-v3.md)
 - [Customization Architecture v4](docs/CUSTOMIZATION-ARCHITECTURE-v4.md)
+- [Customization Architecture v5](docs/CUSTOMIZATION-ARCHITECTURE-v5.md)
 
 ## Runtime configuration
 
@@ -17,14 +18,29 @@ Architecture:
 
 Required:
 
-- `GOOGLE_DRIVE_FOLDER_ID`
 - `GOOGLE_SERVICE_ACCOUNT_JSON_B64`
+- one Drive root configuration:
+  - preferred multi-root mode: `KNOWLEDGE_PORTAL_DRIVE_ROOTS_JSON`
+  - legacy single-root mode: `GOOGLE_DRIVE_FOLDER_ID`
+
+Preferred multi-root example:
+
+```json
+[
+  { "id": "<folder-id>", "label": "Skillz Projects" },
+  { "id": "<folder-id>", "label": "Research", "slug": "research" },
+  { "id": "<folder-id>", "label": "Writing", "description": "Approved writing assets" }
+]
+```
+
+Each configured root is an explicit allowlisted subtree and is read recursively. When `KNOWLEDGE_PORTAL_DRIVE_ROOTS_JSON` is present, it fully replaces the legacy `GOOGLE_DRIVE_FOLDER_ID` path; invalid JSON fails closed instead of silently widening access.
 
 Optional for Shared Drives:
 
-- `GOOGLE_SHARED_DRIVE_ID`
+- global fallback: `GOOGLE_SHARED_DRIVE_ID`
+- per root: `driveId` (or `sharedDriveId`) inside the JSON item
 
-The configured Drive root is the portal's connected evidence/asset store. Important human-facing binary or visual artifacts that are not repository-native build/runtime assets belong in this connected folder, preferably under `Assets/`. The portal remains read-only: creation/versioning happens in Drive, while Fumadocs discovers and links the authoritative Drive item.
+The deployment identity must have read access to every configured folder. Important human-facing binary or visual artifacts that are not repository-native build/runtime assets belong in one of these connected roots, preferably under `Assets/`. The portal remains read-only: creation/versioning happens in Drive, while Fumadocs discovers and links the authoritative Drive item.
 
 ### Git-backed Child Brains
 

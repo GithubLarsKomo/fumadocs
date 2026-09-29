@@ -1,34 +1,80 @@
 import { dynamicLoader } from 'fumadocs-core/source';
 import { googleDrive } from 'fumadocs-google-drive';
+import { getDriveRoots } from '@/lib/drive-config';
 import { getGoogleDriveAccessToken } from '@/lib/service-account';
 
-function getRootFolderId(): string {
-  const folderId = process.env.GOOGLE_DRIVE_FOLDER_ID;
+type DriveSource = ReturnType<typeof googleDrive>;
+type DriveLoader = ReturnType<typeof dynamicLoader>;
 
-  if (!folderId) {
-    throw new Error('GOOGLE_DRIVE_FOLDER_ID is not configured.');
-  }
+let cache:
+  | {
+      key: string;
+      loader: DriveLoader;
+    }
+  | undefined;
 
-  return folderId;
-}
+function getDriveLoader(): DriveLoader {
+  const roots = getDriveRoots();
+  const globalDriveId = process.env.GOOGLE_SHARED_DRIVE_ID || undefined;
+  const key = JSON.stringify({ roots, globalDriveId });
 
-let loader: ReturnType<typeof dynamicLoader> | undefined;
+  if (cache?.key === key) return cache.loader;
 
-function getDriveLoader() {
-  if (loader) return loader;
+  const sources = roots.map((root) => ({
+    root,
+    source: googleDrive({
+      rootFolderId: root.id,
+      driveId: root.driveId ?? globalDriveId,
+      getAccessToken: getGoogleDriveAccessToken,
+      sourceClass: 'evidence',
+      baseDir: root.routePrefix || undefined,
+      staleTime: 60_000,
+    }),
+  }));
 
-  const driveSource = googleDrive({
-    rootFolderId: getRootFolderId(),
-    driveId: process.env.GOOGLE_SHARED_DRIVE_ID || undefined,
-    getAccessToken: getGoogleDriveAccessToken,
-    sourceClass: 'evidence',
+  const aggregateSource = {
+    cache: 'memory' as const,
     staleTime: 60_000,
-  });
+    async files() {
+      const batches = await Promise.all(
+        sources.map(async ({ root, source }) => {
+          try {
+            const files = await source.files();
 
-  loader = dynamicLoader(driveSource, {
+            if (!root.routePrefix) return files;
+
+            return [
+              {
+                type: 'meta' as const,
+                path: `${root.routePrefix}/meta.json`,
+                data: {
+                  title: root.label,
+                },
+              },
+              ...files,
+            ];
+          } catch (error) {
+            console.error(
+              `Google Drive root "${root.label}" is unavailable; skipping this root.`,
+              error,
+            );
+            return [];
+          }
+        }),
+      );
+
+      return batches.flat();
+    },
+    invalidate() {
+      for (const { source } of sources) source.invalidate?.();
+    },
+  };
+
+  const loader = dynamicLoader(aggregateSource as DriveSource, {
     baseUrl: '/drive',
   });
 
+  cache = { key, loader };
   return loader;
 }
 
