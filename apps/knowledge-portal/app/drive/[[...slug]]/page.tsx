@@ -99,8 +99,8 @@ function DriveRootLanding({ root }: { root: DriveRootConfig }) {
       />
       <DocsBody className="kp-doc-body">
         <p>
-          Dieser Bereich wird read-only aus dem konfigurierten Google-Drive-Ordner projiziert.
-          Wähle links einen Unterordner oder ein Dokument aus.
+          Dieser Bereich wird read-only aus dem konfigurierten Google-Drive-Ordner projiziert. Wähle
+          links einen Unterordner oder ein Dokument aus.
         </p>
         <p>
           Google Drive bleibt Eigentümer der Quelldokumente; diese Portalroute ist nur die stabile
