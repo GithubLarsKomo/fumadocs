@@ -68,7 +68,7 @@ export function KnowledgeStatus({
 }
 
 function formatSourceType(sourceType: string): string {
-  if (sourceType === 'google-drive') return 'GitHub Child Brain'.replace('GitHub Child Brain', 'Google Drive');
+  if (sourceType === 'google-drive') return 'Google Drive';
   if (sourceType === 'github-brain') return 'GitHub Child Brain';
   return sourceType;
 }
