@@ -2,8 +2,8 @@ import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { Markdown } from 'fumadocs-core/content/md';
 import { getTableOfContents } from 'fumadocs-core/content/toc';
-import { DocsBody, DocsDescription, DocsPage, DocsTitle } from 'fumadocs-ui/layouts/docs/page';
-import { KnowledgeStatus } from '@/components/knowledge-status';
+import { DocsBody, DocsPage } from 'fumadocs-ui/layouts/docs/page';
+import { DriveDocumentHeader } from '@/components/drive-document-header';
 import { driveRootUrl, getDriveRoots } from '@/lib/drive-config';
 import { getDriveSource } from '@/lib/drive-source';
 
@@ -22,21 +22,27 @@ export default async function DrivePage({ params }: DrivePageProps) {
     const roots = getDriveRoots();
 
     return (
-      <DocsPage toc={[]}>
-        <DocsTitle>Knowledge Portal</DocsTitle>
-        <DocsDescription>Read-only Zugriff auf freigegebene Wissensquellen.</DocsDescription>
-        <KnowledgeStatus sourceClass="evidence" sourceType="google-drive" />
-        <DocsBody>
+      <DocsPage toc={[]} className="kp-doc-page" breadcrumb={{ enabled: false }}>
+        <DriveDocumentHeader
+          title="Drive Evidence"
+          description="Read-only Zugriff auf freigegebene Wissensquellen und Originalartefakte."
+        />
+        <DocsBody className="kp-doc-body">
           <p>Wähle links ein Dokument oder einen freigegebenen Google-Drive-Bereich aus.</p>
           {roots.length > 1 ? (
-            <ul>
+            <div className="kp-drive-root-grid">
               {roots.map((root) => (
-                <li key={root.id}>
-                  <a href={driveRootUrl(root)}>{root.label}</a>
-                  {root.description ? <> — {root.description}</> : null}
-                </li>
+                <a key={root.id} href={driveRootUrl(root)} className="kp-drive-root-card">
+                  <span className="kp-drive-root-title">{root.label}</span>
+                  {root.description ? (
+                    <span className="kp-drive-root-description">{root.description}</span>
+                  ) : null}
+                  <span className="kp-home-card-arrow" aria-hidden="true">
+                    →
+                  </span>
+                </a>
               ))}
-            </ul>
+            </div>
           ) : null}
           <p>
             Google Drive bleibt Eigentümer der Quelldokumente. Eine Übernahme in kanonisches Wissen
@@ -61,16 +67,15 @@ export default async function DrivePage({ params }: DrivePageProps) {
   const toc = getTableOfContents(loaded.content);
 
   return (
-    <DocsPage toc={toc}>
-      <DocsTitle>{page.data.title}</DocsTitle>
-      {page.data.description ? <DocsDescription>{page.data.description}</DocsDescription> : null}
-      <KnowledgeStatus
-        sourceClass="evidence"
+    <DocsPage toc={toc} className="kp-doc-page" breadcrumb={{ enabled: false }}>
+      <DriveDocumentHeader
+        title={page.data.title}
+        description={page.data.description}
         sourceType={page.data.sourceType}
         contentKind={page.data.contentKind}
         modifiedTime={page.data.driveFile.modifiedTime}
       />
-      <DocsBody>
+      <DocsBody className="kp-doc-body">
         <Markdown>{loaded.content}</Markdown>
       </DocsBody>
     </DocsPage>
@@ -82,8 +87,8 @@ export async function generateMetadata({ params }: DrivePageProps): Promise<Meta
 
   if (slug.length === 0) {
     return {
-      title: 'Knowledge Portal',
-      description: 'Read-only Zugriff auf freigegebene Wissensquellen.',
+      title: 'Drive Evidence',
+      description: 'Read-only Zugriff auf freigegebene Wissensquellen und Originalartefakte.',
     };
   }
 
