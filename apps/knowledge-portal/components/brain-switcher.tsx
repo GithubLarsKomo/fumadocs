@@ -85,5 +85,9 @@ function SourceDot({ sourceClass }: { sourceClass: KnowledgeSourceClass }) {
 }
 
 export function SourceBoundaryNote() {
-  return <div className="kp-source-boundary-note">Read-only Portal · Quellenautorität bleibt erhalten</div>;
+  return (
+    <div className="kp-source-boundary-note">
+      Read-only Portal · Quellenautorität bleibt erhalten
+    </div>
+  );
 }
