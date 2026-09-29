@@ -3,6 +3,8 @@ import { notFound } from 'next/navigation';
 import { Markdown } from 'fumadocs-core/content/md';
 import { getTableOfContents } from 'fumadocs-core/content/toc';
 import { DocsBody, DocsDescription, DocsPage, DocsTitle } from 'fumadocs-ui/layouts/docs/page';
+import { KnowledgeStatus } from '@/components/knowledge-status';
+import { driveRootUrl, getDriveRoots } from '@/lib/drive-config';
 import { getDriveSource } from '@/lib/drive-source';
 
 export const dynamic = 'force-dynamic';
@@ -17,15 +19,33 @@ export default async function DrivePage({ params }: DrivePageProps) {
   const { slug = [] } = await params;
 
   if (slug.length === 0) {
+    const roots = getDriveRoots();
+
     return (
       <DocsPage toc={[]}>
         <DocsTitle>Knowledge Portal</DocsTitle>
         <DocsDescription>Read-only Zugriff auf freigegebene Wissensquellen.</DocsDescription>
+        <KnowledgeStatus sourceClass="evidence" sourceType="google-drive" />
         <DocsBody>
-          <p>Wähle links ein Dokument aus dem freigegebenen Google-Drive-Bereich aus.</p>
+          <p>Wähle links ein Dokument oder einen freigegebenen Google-Drive-Bereich aus.</p>
+          {roots.length > 1 ? (
+            <ul>
+              {roots.map((root) => (
+                <li key={root.id}>
+                  <a href={driveRootUrl(root)}>{root.label}</a>
+                  {root.description ? <> — {root.description}</> : null}
+                </li>
+              ))}
+            </ul>
+          ) : null}
           <p>
             Google Drive bleibt Eigentümer der Quelldokumente. Eine Übernahme in kanonisches Wissen
             erfolgt nicht automatisch.
+          </p>
+          <p>
+            Wichtige visuelle und binäre Artefakte liegen im verbundenen Drive-Bereich (bevorzugt
+            unter <code>Assets/</code>) und werden hier als Evidence mit Link zum Original
+            bereitgestellt.
           </p>
         </DocsBody>
       </DocsPage>
@@ -44,6 +64,12 @@ export default async function DrivePage({ params }: DrivePageProps) {
     <DocsPage toc={toc}>
       <DocsTitle>{page.data.title}</DocsTitle>
       {page.data.description ? <DocsDescription>{page.data.description}</DocsDescription> : null}
+      <KnowledgeStatus
+        sourceClass="evidence"
+        sourceType={page.data.sourceType}
+        contentKind={page.data.contentKind}
+        modifiedTime={page.data.driveFile.modifiedTime}
+      />
       <DocsBody>
         <Markdown>{loaded.content}</Markdown>
       </DocsBody>

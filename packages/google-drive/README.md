@@ -10,7 +10,7 @@ Phase 0 is intentionally read-only: it projects Drive-owned source documents int
 - support My Drive and Shared Drives;
 - export Google Docs as `text/markdown`;
 - download `.md`, `.markdown`, and `.txt` files directly;
-- expose PDF, DOCX, XLSX, PPTX, Google Sheets, and Google Slides as evidence pages linking to the Drive original;
+- expose PDF, DOCX, XLSX, PPTX, Google Sheets, Google Slides, PNG, JPEG, WebP, and SVG as evidence pages linking to the Drive original;
 - preserve Drive provenance metadata on every page;
 - perform no writes to Google Drive;
 - perform no automatic promotion from Drive into Git-backed knowledge.
@@ -95,6 +95,7 @@ Set `driveId` when the root folder belongs to a Shared Drive. The source then li
 | PPTX               | evidence page + Drive link |
 | Google Sheet       | evidence page + Drive link |
 | Google Slides      | evidence page + Drive link |
+| PNG/JPEG/WebP/SVG  | evidence page + Drive link |
 | other types        | ignored                    |
 
 Google Workspace exports are subject to Google Drive API export limits.
@@ -129,7 +130,7 @@ For a Shared Drive, also set `GOOGLE_SHARED_DRIVE_ID`.
 The smoke test deliberately fails unless the configured folder contains at least:
 
 - one Google Doc, Markdown file, or text file that can be loaded as content;
-- one supported evidence item such as Google Sheets, Google Slides, PDF, DOCX, XLSX, or PPTX.
+- one supported evidence item such as Google Sheets, Google Slides, PDF, DOCX, XLSX, PPTX, PNG, JPEG, WebP, or SVG.
 
 It prints only non-secret source metadata and content length. The access token and folder ID are never written to the repository or included in page data.
 

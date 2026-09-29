@@ -1,23 +1,30 @@
+import { notFound } from 'next/navigation';
 import { DocsLayout } from 'fumadocs-ui/layouts/docs';
 import { BrainSwitcher, SourceBoundaryNote } from '@/components/brain-switcher';
-import { getDriveSource } from '@/lib/drive-source';
+import { getGitHubBrainSource } from '@/lib/github-brains';
 import { baseOptions } from '@/lib/layout.shared';
 
 export const dynamic = 'force-dynamic';
 
-export default async function DriveLayout({
-  children,
-}: Readonly<{
+interface BrainLayoutProps {
   children: React.ReactNode;
-}>) {
-  const source = await getDriveSource();
+  params: Promise<{
+    brainId: string;
+  }>;
+}
+
+export default async function BrainLayout({ children, params }: BrainLayoutProps) {
+  const { brainId } = await params;
+  const source = await getGitHubBrainSource(brainId);
+
+  if (!source) notFound();
 
   return (
     <DocsLayout
       tree={source.getPageTree()}
       {...baseOptions()}
       sidebar={{
-        banner: <BrainSwitcher activeId="drive" />,
+        banner: <BrainSwitcher activeId={brainId} />,
         footer: <SourceBoundaryNote />,
       }}
     >
