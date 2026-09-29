@@ -1,0 +1,23 @@
+name: Footer Format Probe
+
+on:
+  pull_request:
+    branches: [dev]
+    paths:
+      - 'apps/knowledge-portal/components/brain-switcher.tsx'
+      - '.github/workflows/footer-format-probe.yml'
+
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v6
+        with:
+          node-version: 24
+          cache: pnpm
+      - run: pnpm i --frozen-lockfile
+      - run: |
+          pnpm exec oxfmt apps/knowledge-portal/components/brain-switcher.tsx
+          git diff -- apps/knowledge-portal/components/brain-switcher.tsx
