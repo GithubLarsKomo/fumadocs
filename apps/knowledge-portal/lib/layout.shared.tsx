@@ -5,11 +5,7 @@ export function baseOptions(): BaseLayoutProps {
     nav: {
       title: (
         <span className="kp-nav-brand">
-          <img
-            className="kp-nav-logo"
-            src="/brand/logo-dark.svg"
-            alt="Ratzeburg AI Brain"
-          />
+          <img className="kp-nav-logo" src="/brand/logo-dark.svg" alt="Ratzeburg AI Brain" />
         </span>
       ),
     },
