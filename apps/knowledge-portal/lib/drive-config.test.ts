@@ -41,7 +41,7 @@ describe('Drive root configuration', () => {
   });
 
   it('resolves a configured multi-root landing route before document lookup', () => {
-    const env = {
+    const env: NodeJS.ProcessEnv = {
       NODE_ENV: 'test',
       KNOWLEDGE_PORTAL_DRIVE_ROOTS_JSON: JSON.stringify([
         { id: 'folder-a', label: 'ChatGPT' },
