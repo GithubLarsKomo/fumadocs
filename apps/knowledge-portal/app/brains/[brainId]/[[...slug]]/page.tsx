@@ -34,6 +34,7 @@ export default async function BrainPage({ params }: BrainPageProps) {
     return (
       <DocsPage toc={[]} className="kp-doc-page" breadcrumb={{ enabled: false }}>
         <BrainDocumentHeader
+          brainId={brainId}
           brainLabel={brain.label}
           title={brain.label}
           description={brain.scope}
@@ -57,6 +58,7 @@ export default async function BrainPage({ params }: BrainPageProps) {
   return (
     <DocsPage toc={toc} className="kp-doc-page" breadcrumb={{ enabled: false }}>
       <BrainDocumentHeader
+        brainId={brainId}
         brainLabel={brain.label}
         title={title}
         description={page.data.description}
