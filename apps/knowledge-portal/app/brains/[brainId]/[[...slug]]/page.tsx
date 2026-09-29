@@ -32,7 +32,7 @@ export default async function BrainPage({ params }: BrainPageProps) {
     if (slug.length > 0) notFound();
 
     return (
-      <DocsPage toc={[]} className="kp-doc-page">
+      <DocsPage toc={[]} className="kp-doc-page" breadcrumb={{ enabled: false }}>
         <BrainDocumentHeader
           brainLabel={brain.label}
           title={brain.label}
@@ -55,7 +55,7 @@ export default async function BrainPage({ params }: BrainPageProps) {
   const title = presentation.title ?? page.data.title;
 
   return (
-    <DocsPage toc={toc} className="kp-doc-page">
+    <DocsPage toc={toc} className="kp-doc-page" breadcrumb={{ enabled: false }}>
       <BrainDocumentHeader
         brainLabel={brain.label}
         title={title}
