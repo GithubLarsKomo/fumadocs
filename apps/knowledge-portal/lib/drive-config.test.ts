@@ -1,5 +1,10 @@
 import { describe, expect, it } from 'vitest';
-import { driveRootUrl, getDriveRoots, parseDriveRootsJson } from './drive-config';
+import {
+  driveRootUrl,
+  findDriveRootByRoute,
+  getDriveRoots,
+  parseDriveRootsJson,
+} from './drive-config';
 
 describe('Drive root configuration', () => {
   it('parses multiple explicit allowlisted roots with stable route prefixes', () => {
@@ -33,6 +38,21 @@ describe('Drive root configuration', () => {
       },
     ]);
     expect(driveRootUrl(roots[0])).toBe('/drive/skillz-projects');
+  });
+
+  it('resolves a configured multi-root landing route before document lookup', () => {
+    const env = {
+      NODE_ENV: 'test',
+      KNOWLEDGE_PORTAL_DRIVE_ROOTS_JSON: JSON.stringify([
+        { id: 'folder-a', label: 'ChatGPT' },
+        { id: 'folder-b', label: 'Skillz Projects' },
+      ]),
+    };
+
+    expect(findDriveRootByRoute(['chatgpt'], env)?.label).toBe('ChatGPT');
+    expect(findDriveRootByRoute(['skillz-projects'], env)?.id).toBe('folder-b');
+    expect(findDriveRootByRoute(['chatgpt', 'document'], env)).toBeUndefined();
+    expect(findDriveRootByRoute(['unknown'], env)).toBeUndefined();
   });
 
   it('keeps legacy single-root configuration backward compatible', () => {
