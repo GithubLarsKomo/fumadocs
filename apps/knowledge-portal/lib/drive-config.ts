@@ -58,7 +58,9 @@ export function parseDriveRootsJson(value: string): DriveRootConfig[] {
     throw new Error('KNOWLEDGE_PORTAL_DRIVE_ROOTS_JSON must contain at least one root.');
   }
   if (parsed.length > MAX_DRIVE_ROOTS) {
-    throw new Error(`KNOWLEDGE_PORTAL_DRIVE_ROOTS_JSON exceeds the maximum of ${MAX_DRIVE_ROOTS} roots.`);
+    throw new Error(
+      `KNOWLEDGE_PORTAL_DRIVE_ROOTS_JSON exceeds the maximum of ${MAX_DRIVE_ROOTS} roots.`,
+    );
   }
 
   const roots = parsed.map((item, index) => normalizeRoot(item, index));
