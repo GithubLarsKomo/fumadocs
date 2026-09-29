@@ -18,11 +18,11 @@ export default async function HomePage() {
         </div>
 
         <div className="kp-home-brand">
-          <KnowledgeMark className="kp-home-mark" />
-          <div>
-            <div className="kp-home-eyebrow">Ratzeburg AI</div>
-            <div className="kp-home-product">Knowledge Portal</div>
-          </div>
+          <img
+            className="kp-home-brand-logo"
+            src="/brand/logo-dark.svg"
+            alt="Ratzeburg AI Brain — Knowledge Portal"
+          />
         </div>
 
         <div className="kp-home-copy">

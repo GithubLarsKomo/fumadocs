@@ -29,6 +29,49 @@ body {
   letter-spacing: -0.005em;
 }
 
+:root {
+  --kp-deep-navy: #0b1426;
+  --kp-slate: #1e3a5f;
+  --kp-teal: #06b6d4;
+  --kp-cyan: #67e8f9;
+  --kp-amber: #f59e0b;
+  --kp-orange: #fb6b1a;
+  --color-fd-primary: var(--kp-teal);
+}
+
+.dark {
+  --color-fd-background: var(--kp-deep-navy);
+  --color-fd-card: color-mix(in srgb, var(--kp-deep-navy) 82%, var(--kp-slate) 18%);
+  --color-fd-popover: color-mix(in srgb, var(--kp-deep-navy) 78%, var(--kp-slate) 22%);
+  --color-fd-muted: color-mix(in srgb, var(--kp-deep-navy) 68%, var(--kp-slate) 32%);
+  --color-fd-accent: color-mix(in srgb, var(--kp-slate) 74%, var(--kp-teal) 26%);
+  --color-fd-border: color-mix(in srgb, var(--kp-slate) 78%, var(--kp-cyan) 22%);
+  --color-fd-foreground: #f7fbff;
+  --color-fd-muted-foreground: #a8bdd4;
+  --color-fd-primary: var(--kp-teal);
+  --color-fd-primary-foreground: #06111e;
+}
+
+#nd-nav,
+header:has(.kp-nav-brand) {
+  border-color: color-mix(in srgb, var(--kp-slate) 74%, var(--kp-cyan) 26%) !important;
+  background: var(--kp-deep-navy) !important;
+}
+
+#nd-nav button,
+#nd-nav a,
+header:has(.kp-nav-brand) button,
+header:has(.kp-nav-brand) a {
+  color: #f7fbff;
+}
+
+#nd-nav button:hover,
+#nd-nav a:hover,
+header:has(.kp-nav-brand) button:hover,
+header:has(.kp-nav-brand) a:hover {
+  color: var(--kp-cyan);
+}
+
 @media (min-width: 768px) {
   [data-sidebar-placeholder] {
     --fd-sidebar-width: 19.25rem !important;
@@ -482,45 +525,24 @@ body {
 /* Knowledge Portal visual language v1 */
 
 :root {
-  --kp-brand: color-mix(in oklab, var(--color-fd-primary) 86%, #08745d);
-  --kp-brand-soft: color-mix(in oklab, var(--kp-brand) 12%, transparent);
-  --kp-visual-line: color-mix(in oklab, var(--color-fd-border) 72%, var(--kp-brand) 28%);
+  --kp-brand: var(--kp-teal);
+  --kp-brand-soft: color-mix(in oklab, var(--kp-cyan) 14%, transparent);
+  --kp-visual-line: color-mix(in oklab, var(--kp-slate) 68%, var(--kp-cyan) 32%);
 }
 
 .kp-nav-brand {
   display: inline-flex;
+  min-width: 0;
+  height: 3.25rem;
   align-items: center;
-  gap: 0.58rem;
-  min-width: 0;
 }
 
-.kp-nav-mark {
-  width: 2rem;
-  height: 2rem;
-  flex: none;
-}
-
-.kp-nav-brand-copy {
-  display: flex;
-  min-width: 0;
-  flex-direction: column;
-  line-height: 1.02;
-}
-
-.kp-nav-brand-name {
-  color: var(--color-fd-foreground);
-  font-size: 0.76rem;
-  font-weight: 760;
-  letter-spacing: 0.015em;
-}
-
-.kp-nav-brand-product {
-  margin-top: 0.14rem;
-  color: var(--color-fd-muted-foreground);
-  font-size: 0.62rem;
-  font-weight: 650;
-  letter-spacing: 0.055em;
-  text-transform: uppercase;
+.kp-nav-logo {
+  display: block;
+  width: clamp(13.25rem, 20vw, 17.5rem);
+  max-width: 100%;
+  height: auto;
+  object-fit: contain;
 }
 
 .kp-mark-shell,
@@ -690,20 +712,21 @@ body {
   position: relative;
   overflow: hidden;
   min-height: 29rem;
-  border: 1px solid color-mix(in oklab, var(--color-fd-border) 82%, var(--kp-brand) 18%);
+  border: 1px solid color-mix(in srgb, var(--kp-slate) 72%, var(--kp-cyan) 28%);
   border-radius: 1.35rem;
   background:
     radial-gradient(
       circle at 84% 16%,
-      color-mix(in oklab, var(--kp-brand) 17%, transparent),
+      color-mix(in srgb, var(--kp-cyan) 20%, transparent),
       transparent 30%
     ),
     radial-gradient(
       circle at 18% 86%,
-      color-mix(in oklab, var(--kp-brand) 8%, transparent),
+      color-mix(in srgb, var(--kp-orange) 12%, transparent),
       transparent 28%
     ),
-    var(--color-fd-card);
+    var(--kp-deep-navy);
+  color: #f7fbff;
   padding: clamp(1.4rem, 4vw, 3.5rem);
 }
 
@@ -753,12 +776,13 @@ body {
 .kp-home-brand {
   display: flex;
   align-items: center;
-  gap: 0.75rem;
 }
 
-.kp-home-mark {
-  width: 3.25rem;
-  height: 3.25rem;
+.kp-home-brand-logo {
+  display: block;
+  width: min(31rem, 82vw);
+  height: auto;
+  object-fit: contain;
 }
 
 .kp-home-eyebrow {
@@ -785,7 +809,7 @@ body {
 .kp-home-copy h1 {
   max-width: 13ch;
   margin: 0;
-  color: var(--color-fd-foreground);
+  color: #f7fbff;
   font-size: clamp(2.5rem, 6vw, 5.3rem);
   font-weight: 740;
   letter-spacing: -0.055em;
@@ -795,7 +819,7 @@ body {
 .kp-home-copy p {
   max-width: 60ch;
   margin: 1.3rem 0 0;
-  color: var(--color-fd-muted-foreground);
+  color: #a8bdd4;
   font-size: clamp(1rem, 1.5vw, 1.13rem);
   line-height: 1.65;
 }
@@ -1048,8 +1072,12 @@ body {
 }
 
 @media (max-width: 767px) {
-  .kp-nav-brand-product {
-    display: none;
+  .kp-nav-brand {
+    height: 3rem;
+  }
+
+  .kp-nav-logo {
+    width: 12.75rem;
   }
 
   .kp-document-header {
