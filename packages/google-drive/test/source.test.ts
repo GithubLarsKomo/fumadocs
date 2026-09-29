@@ -153,6 +153,53 @@ describe('googleDrive', () => {
     expect(calls.some((url) => url.includes('/files/doc-1/export'))).toBe(true);
   });
 
+  it('can prefix public page slugs independently from virtual paths', async () => {
+    const fetchMock = (async (input: RequestInfo | URL) => {
+      const raw = typeof input === 'string' ? input : input instanceof URL ? input.href : input.url;
+      const url = new URL(raw);
+
+      if (url.pathname === '/drive/v3/files') {
+        return json({
+          files: [
+            {
+              id: 'folder-1',
+              name: 'Architecture',
+              mimeType: 'application/vnd.google-apps.folder',
+            },
+            {
+              id: 'md-1',
+              name: 'README.md',
+              mimeType: 'text/markdown',
+            },
+          ],
+        });
+      }
+
+      throw new Error(`Unexpected request: ${url.href}`);
+    }) as typeof fetch;
+
+    const source = googleDrive({
+      rootFolderId: 'root',
+      getAccessToken: () => 'test-token',
+      fetch: fetchMock,
+      apiBase: 'https://example.test/drive/v3',
+      baseDir: 'chatgpt',
+      slugPrefix: 'chatgpt',
+    });
+
+    const files = await source.files();
+    const readme = files.find((file) => file.type === 'page' && file.data.title === 'README.md');
+
+    expect(readme?.type).toBe('page');
+    if (!readme || readme.type !== 'page') throw new Error('Missing README page');
+
+    expect(readme.path).toBe('chatgpt/readme.mdx');
+    expect(readme.slugs).toEqual(['chatgpt', 'readme']);
+    expect(
+      files.some((file) => file.type === 'meta' && file.path === 'chatgpt/architecture/meta.json'),
+    ).toBe(true);
+  });
+
   it('adds Shared Drive list parameters and disambiguates duplicate slugs', async () => {
     let listUrl: URL | undefined;
 
