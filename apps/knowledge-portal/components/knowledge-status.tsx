@@ -1,4 +1,5 @@
 import type { GoogleDriveContentKind } from 'fumadocs-google-drive';
+import { SourceGlyph } from '@/components/knowledge-visuals';
 import type { KnowledgeSourceClass } from '@/lib/brain-navigation';
 
 const sourceLabels: Record<KnowledgeSourceClass, string> = {
@@ -34,7 +35,7 @@ export function KnowledgeStatus({
   return (
     <div className="kp-status-row" aria-label="Quellenstatus">
       <span className="kp-status-authority">
-        <span className="kp-source-dot" data-source-class={sourceClass} aria-hidden="true" />
+        <SourceGlyph sourceClass={sourceClass} className="kp-source-glyph" />
         <span>{sourceLabels[sourceClass]}</span>
       </span>
       {sourceType ? (
