@@ -10,6 +10,10 @@ const PDF_MIME = 'application/pdf';
 const DOCX_MIME = 'application/vnd.openxmlformats-officedocument.wordprocessingml.document';
 const XLSX_MIME = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet';
 const PPTX_MIME = 'application/vnd.openxmlformats-officedocument.presentationml.presentation';
+const PNG_MIME = 'image/png';
+const JPEG_MIME = 'image/jpeg';
+const WEBP_MIME = 'image/webp';
+const SVG_MIME = 'image/svg+xml';
 
 const evidenceMimeTypes = new Set([
   GOOGLE_SHEET_MIME,
@@ -18,6 +22,10 @@ const evidenceMimeTypes = new Set([
   DOCX_MIME,
   XLSX_MIME,
   PPTX_MIME,
+  PNG_MIME,
+  JPEG_MIME,
+  WEBP_MIME,
+  SVG_MIME,
 ]);
 
 export type GoogleDriveContentKind = 'markdown' | 'text' | 'evidence';
@@ -108,6 +116,7 @@ interface DriveFileList {
  * - .md/.markdown -> downloaded as Markdown
  * - .txt -> downloaded as plain text
  * - PDF/DOCX/XLSX/PPTX/Google Sheets/Google Slides -> evidence pages linking to Drive
+ * - PNG/JPEG/WebP/SVG -> visual evidence pages linking to the Drive original
  *
  * Drive remains the authority for Drive-owned source documents. This adapter
  * does not write to Drive and does not promote content into another knowledge store.
@@ -437,7 +446,7 @@ function slugFor(file: GoogleDriveFile): string {
   const withoutExtension =
     file.mimeType === FOLDER_MIME || file.mimeType.startsWith('application/vnd.google-apps.')
       ? file.name
-      : file.name.replace(/\.(?:md|markdown|txt|pdf|docx|xlsx|pptx)$/i, '');
+      : file.name.replace(/\.(?:md|markdown|txt|pdf|docx|xlsx|pptx|png|jpe?g|webp|svg)$/i, '');
 
   return slugify(withoutExtension) || `file-${shortId(file.id)}`;
 }

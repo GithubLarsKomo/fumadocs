@@ -29,6 +29,11 @@ export default async function DrivePage({ params }: DrivePageProps) {
             Google Drive bleibt Eigentümer der Quelldokumente. Eine Übernahme in kanonisches Wissen
             erfolgt nicht automatisch.
           </p>
+          <p>
+            Wichtige visuelle und binäre Artefakte liegen im verbundenen Drive-Bereich (bevorzugt
+            unter <code>Assets/</code>) und werden hier als Evidence mit Link zum Original
+            bereitgestellt.
+          </p>
         </DocsBody>
       </DocsPage>
     );

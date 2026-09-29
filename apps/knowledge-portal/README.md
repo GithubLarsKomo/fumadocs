@@ -9,6 +9,7 @@ Architecture:
 - [Customization Architecture v1](docs/CUSTOMIZATION-ARCHITECTURE-v1.md)
 - [Customization Architecture v2](docs/CUSTOMIZATION-ARCHITECTURE-v2.md)
 - [Customization Architecture v3](docs/CUSTOMIZATION-ARCHITECTURE-v3.md)
+- [Customization Architecture v4](docs/CUSTOMIZATION-ARCHITECTURE-v4.md)
 
 ## Runtime configuration
 
@@ -22,6 +23,8 @@ Required:
 Optional for Shared Drives:
 
 - `GOOGLE_SHARED_DRIVE_ID`
+
+The configured Drive root is the portal's connected evidence/asset store. Important human-facing binary or visual artifacts that are not repository-native build/runtime assets belong in this connected folder, preferably under `Assets/`. The portal remains read-only: creation/versioning happens in Drive, while Fumadocs discovers and links the authoritative Drive item.
 
 ### Git-backed Child Brains
 

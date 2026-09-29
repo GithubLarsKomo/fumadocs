@@ -59,6 +59,13 @@ describe('googleDrive', () => {
               modifiedTime: '2026-09-28T07:03:00Z',
               webViewLink: 'https://drive.google.com/file/d/pdf-1/view',
             },
+            {
+              id: 'image-1',
+              name: 'Architecture Overview.png',
+              mimeType: 'image/png',
+              modifiedTime: '2026-09-28T07:03:30Z',
+              webViewLink: 'https://drive.google.com/file/d/image-1/view',
+            },
           ],
         });
       }
@@ -113,6 +120,7 @@ describe('googleDrive', () => {
     const markdown = asPage(files, 'README.md');
     const text = asPage(files, 'Notes.txt');
     const evidence = asPage(files, 'Evidence.pdf');
+    const image = asPage(files, 'Architecture Overview.png');
 
     expect(doc.driveFile.id).toBe('doc-1');
     expect(doc.sourceClass).toBe('evidence');
@@ -129,6 +137,11 @@ describe('googleDrive', () => {
     expect(evidenceLoaded.contentKind).toBe('evidence');
     expect(evidenceLoaded.content).toContain('Open the original in Google Drive');
     expect(evidenceLoaded.content).toContain('application/pdf');
+
+    const imageLoaded = await image.load();
+    expect(imageLoaded.contentKind).toBe('evidence');
+    expect(imageLoaded.content).toContain('Open the original in Google Drive');
+    expect(imageLoaded.content).toContain('image/png');
 
     const structured = await doc.structuredData();
     expect(structured.headings[0]).toEqual({
