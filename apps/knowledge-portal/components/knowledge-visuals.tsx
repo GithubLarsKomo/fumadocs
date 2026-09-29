@@ -82,11 +82,7 @@ export function SourceGlyph({
   );
 }
 
-export function BrainGlyph({
-  id,
-  label,
-  className,
-}: GlyphProps & { id: string; label?: string }) {
+export function BrainGlyph({ id, label, className }: GlyphProps & { id: string; label?: string }) {
   const kind = brainGlyphKind(id, label);
 
   return (
