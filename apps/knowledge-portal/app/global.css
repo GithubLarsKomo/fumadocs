@@ -36,12 +36,11 @@ body {
 }
 
 #nd-sidebar {
-  background:
-    linear-gradient(
-      180deg,
-      color-mix(in oklab, var(--color-fd-card) 97%, var(--color-fd-primary) 3%),
-      var(--color-fd-card) 16rem
-    );
+  background: linear-gradient(
+    180deg,
+    color-mix(in oklab, var(--color-fd-card) 97%, var(--color-fd-primary) 3%),
+    var(--color-fd-card) 16rem
+  );
 }
 
 #nd-sidebar [data-sidebar-viewport] {
@@ -447,7 +446,11 @@ body {
 }
 
 .kp-doc-body.prose blockquote {
-  border-inline-start-color: color-mix(in oklab, var(--color-fd-primary) 55%, var(--color-fd-border));
+  border-inline-start-color: color-mix(
+    in oklab,
+    var(--color-fd-primary) 55%,
+    var(--color-fd-border)
+  );
   color: var(--color-fd-muted-foreground);
 }
 
