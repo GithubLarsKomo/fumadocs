@@ -37,9 +37,10 @@ describe('Drive root configuration', () => {
 
   it('keeps legacy single-root configuration backward compatible', () => {
     const roots = getDriveRoots({
+      NODE_ENV: 'test',
       GOOGLE_DRIVE_FOLDER_ID: 'legacy-folder',
       GOOGLE_SHARED_DRIVE_ID: 'legacy-drive',
-    } as NodeJS.ProcessEnv);
+    });
 
     expect(roots).toEqual([
       {
@@ -64,6 +65,6 @@ describe('Drive root configuration', () => {
     ).toThrow('Duplicate Google Drive root slug');
 
     expect(() => parseDriveRootsJson('{not-json')).toThrow('must be valid JSON');
-    expect(() => getDriveRoots({} as NodeJS.ProcessEnv)).toThrow('No Google Drive root');
+    expect(() => getDriveRoots({ NODE_ENV: 'test' })).toThrow('No Google Drive root');
   });
 });
