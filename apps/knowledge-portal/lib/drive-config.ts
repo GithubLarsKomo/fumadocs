@@ -85,6 +85,14 @@ export function driveRootUrl(root: DriveRootConfig): string {
   return root.routePrefix ? `/drive/${root.routePrefix}` : '/drive';
 }
 
+export function findDriveRootByRoute(
+  slug: string[],
+  env: NodeJS.ProcessEnv = process.env,
+): DriveRootConfig | undefined {
+  if (slug.length !== 1) return undefined;
+  return getDriveRoots(env).find((root) => root.routePrefix === slug[0]);
+}
+
 function normalizeRoot(value: unknown, index: number): DriveRootConfig {
   if (!value || typeof value !== 'object') {
     throw new Error(`Drive root at index ${index} must be an object.`);
