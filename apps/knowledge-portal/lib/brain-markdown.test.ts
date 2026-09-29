@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { brainSlugsFor, rewriteBrainMarkdownLinks } from './brain-markdown';
+import { brainSlugsFor, prepareBrainMarkdown, rewriteBrainMarkdownLinks } from './brain-markdown';
 
 describe('rewriteBrainMarkdownLinks', () => {
   it('rewrites root-relative Markdown files into Brain routes', () => {
@@ -71,5 +71,20 @@ describe('rewriteBrainMarkdownLinks', () => {
       'knowledge',
       'el-read-only-external-source-adapters',
     ]);
+  });
+});
+
+
+describe('prepareBrainMarkdown', () => {
+  it('promotes the leading H1 into the portal document header', () => {
+    expect(prepareBrainMarkdown('# Coding Brain — Index\n\n**Brain type:** collection brain')).toEqual({
+      title: 'Coding Brain — Index',
+      body: '**Brain type:** collection brain',
+    });
+  });
+
+  it('preserves Markdown when the first content is not an H1', () => {
+    const input = '**Status:** active\n\n## Mission';
+    expect(prepareBrainMarkdown(input)).toEqual({ body: input });
   });
 });
