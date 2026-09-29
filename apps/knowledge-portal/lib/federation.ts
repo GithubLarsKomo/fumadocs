@@ -33,6 +33,7 @@ export async function getEnabledFederationBrains(): Promise<FederationBrain[]> {
   const repository = process.env.KNOWLEDGE_PORTAL_FEDERATION_REPOSITORY;
   const allowlist = parseAllowlist(process.env.KNOWLEDGE_PORTAL_BRAIN_ALLOWLIST);
   if (!repository || allowlist.size === 0) return [];
+  const allowAll = allowlist.has('*');
 
   const ref = process.env.KNOWLEDGE_PORTAL_FEDERATION_REF || 'main';
   const registryPath =
@@ -46,7 +47,7 @@ export async function getEnabledFederationBrains(): Promise<FederationBrain[]> {
     .filter(isRegistryBrain)
     .filter(
       (brain) =>
-        allowlist.has(brain.brainId) &&
+        (allowAll || allowlist.has(brain.brainId)) &&
         brain.status === 'available' &&
         brain.repositoryAvailable !== false &&
         brain.memoryRootAvailable !== false,
