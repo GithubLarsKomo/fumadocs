@@ -1,0 +1,22 @@
+name: Knowledge Portal Format Preview
+
+on:
+  push:
+    branches:
+      - feat/knowledge-portal-visual-language-v1
+
+jobs:
+  format-preview:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v6
+        with:
+          node-version: 24
+          cache: pnpm
+      - run: pnpm i --frozen-lockfile
+      - name: Format target files
+        run: pnpm exec oxfmt apps/knowledge-portal/app/global.css apps/knowledge-portal/components/knowledge-visuals.tsx
+      - name: Show formatter diff
+        run: git diff -- apps/knowledge-portal/app/global.css apps/knowledge-portal/components/knowledge-visuals.tsx
