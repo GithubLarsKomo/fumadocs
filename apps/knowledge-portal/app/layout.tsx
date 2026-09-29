@@ -4,8 +4,8 @@ import './global.css';
 
 export const metadata: Metadata = {
   title: {
-    default: 'Ratzeburg AI Knowledge Portal',
-    template: '%s | Ratzeburg AI Knowledge Portal',
+    default: 'Ratzeburg AI Brain',
+    template: '%s | Ratzeburg AI Brain',
   },
   description: 'Read-only knowledge portal for governed source documents.',
 };
