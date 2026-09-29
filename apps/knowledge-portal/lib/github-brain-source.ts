@@ -1,6 +1,11 @@
 import type { StructuredData } from 'fumadocs-core/mdx-plugins/remark-structure';
 import type { DynamicSource, MetaData, PageData, VirtualFile } from 'fumadocs-core/source';
 import type { FederationBrain } from '@/lib/federation';
+import {
+  brainSlugsFor,
+  rewriteBrainMarkdownLinks,
+  slugifyBrainSegment,
+} from '@/lib/brain-markdown';
 import { encodeGitHubPath, encodeRepository, githubJson } from '@/lib/github-client';
 
 interface GitHubDirectoryEntry {
@@ -109,7 +114,7 @@ export function githubBrainSource(brain: FederationBrain): DynamicSource<GitHubB
     relativePath: string,
     revision: string,
   ): GitHubBrainVirtualFile {
-    const slugs = slugsFor(relativePath);
+    const slugs = brainSlugsFor(relativePath);
     const virtualPath = relativePath.replace(/\.(?:md|mdx)$/i, '.mdx');
     const canonicalRef = `github://${brain.repository}@${revision}/${entry.path}`;
     const sourceUrl = `https://github.com/${brain.repository}/blob/${revision}/${encodeGitHubPath(entry.path)}`;
@@ -117,7 +122,10 @@ export function githubBrainSource(brain: FederationBrain): DynamicSource<GitHubB
     let loaded: Promise<GitHubBrainLoadedPage> | undefined;
     const load = () =>
       (loaded ??= loadBlob(entry.sha).then((content) => ({
-        content,
+        content: rewriteBrainMarkdownLinks(content, {
+          brainId: brain.brainId,
+          currentPath: relativePath,
+        }),
         sourceType: 'github-brain' as const,
         sourceClass: 'canonical' as const,
         brainId: brain.brainId,
@@ -196,17 +204,6 @@ export function githubBrainSource(brain: FederationBrain): DynamicSource<GitHubB
   };
 }
 
-function slugsFor(relativePath: string): string[] {
-  const parts = relativePath.split('/').filter(Boolean);
-  const file = parts.pop();
-  if (!file) return [];
-
-  const stem = file.replace(/\.(?:md|mdx)$/i, '');
-  if (/^index$/i.test(stem)) return parts.map(slugify);
-
-  return [...parts, stem].map(slugify);
-}
-
 function titleFor(relativePath: string, brainLabel: string): string {
   const parts = relativePath.split('/').filter(Boolean);
   const file = parts.at(-1) ?? relativePath;
@@ -225,16 +222,6 @@ function humanize(value: string): string {
     .replace(/\s+/g, ' ')
     .trim()
     .replace(/\b\w/g, (character) => character.toUpperCase());
-}
-
-function slugify(value: string): string {
-  return value
-    .normalize('NFKD')
-    .replace(/[\u0300-\u036f]/g, '')
-    .toLowerCase()
-    .replace(/[^a-z0-9]+/g, '-')
-    .replace(/^-+|-+$/g, '')
-    .replace(/-{2,}/g, '-');
 }
 
 function markdownStructuredData(markdown: string): StructuredData {
@@ -264,7 +251,7 @@ function markdownStructuredData(markdown: string): StructuredData {
     if (heading) {
       flush();
       const content = cleanMarkdown(heading[2]);
-      const base = slugify(content) || 'section';
+      const base = slugifyBrainSegment(content) || 'section';
       const count = (occurrences.get(base) ?? 0) + 1;
       occurrences.set(base, count);
       activeHeading = count === 1 ? base : `${base}-${count}`;
