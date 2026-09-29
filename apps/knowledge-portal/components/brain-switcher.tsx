@@ -26,7 +26,12 @@ export async function BrainSwitcher({ activeId }: { activeId?: string }) {
           <span className="kp-brain-select-meta">
             <SourceDot sourceClass={active.sourceClass} />
             <svg aria-hidden="true" viewBox="0 0 20 20" className="kp-chevron">
-              <path d="m5.5 7.5 4.5 4.5 4.5-4.5" fill="none" stroke="currentColor" strokeWidth="1.6" />
+              <path
+                d="m5.5 7.5 4.5 4.5 4.5-4.5"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="1.6"
+              />
             </svg>
           </span>
         </summary>
