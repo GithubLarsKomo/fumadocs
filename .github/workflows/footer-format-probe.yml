@@ -1,10 +1,10 @@
-name: Footer Format Probe
+name: V4 Format Probe
 
 on:
   pull_request:
     branches: [dev]
     paths:
-      - 'apps/knowledge-portal/components/brain-switcher.tsx'
+      - 'apps/knowledge-portal/docs/CUSTOMIZATION-ARCHITECTURE-v4.md'
       - '.github/workflows/footer-format-probe.yml'
 
 jobs:
@@ -19,5 +19,5 @@ jobs:
           cache: pnpm
       - run: pnpm i --frozen-lockfile
       - run: |
-          pnpm exec oxfmt apps/knowledge-portal/components/brain-switcher.tsx
-          git diff -- apps/knowledge-portal/components/brain-switcher.tsx
+          pnpm exec oxfmt apps/knowledge-portal/docs/CUSTOMIZATION-ARCHITECTURE-v4.md
+          git diff -- apps/knowledge-portal/docs/CUSTOMIZATION-ARCHITECTURE-v4.md
