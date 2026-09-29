@@ -125,6 +125,11 @@ export function githubBrainSource(brain: FederationBrain): DynamicSource<GitHubB
         content: rewriteBrainMarkdownLinks(content, {
           brainId: brain.brainId,
           currentPath: relativePath,
+          source: {
+            repository: brain.repository,
+            revision,
+            projectRoot: rootPath,
+          },
         }),
         sourceType: 'github-brain' as const,
         sourceClass: 'canonical' as const,

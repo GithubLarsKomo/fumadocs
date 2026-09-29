@@ -34,7 +34,7 @@ describe('rewriteBrainMarkdownLinks', () => {
     ).toBe('[Topics](/brains/coding/topics?view=all#architecture)');
   });
 
-  it('leaves external, absolute, anchor-only and out-of-root links unchanged', () => {
+  it('leaves external, absolute, anchor-only and unresolved out-of-root links unchanged', () => {
     const input = [
       '[GitHub](https://github.com/example/repo)',
       '[Drive](/drive)',
@@ -49,6 +49,48 @@ describe('rewriteBrainMarkdownLinks', () => {
         currentPath: 'INDEX.md',
       }),
     ).toBe(input);
+  });
+
+  it('falls back to pinned GitHub source URLs for relative files outside the portal projection', () => {
+    const input = [
+      '[Outside](../../README.md#usage)',
+      '[Schema](../schema.json)',
+      '![Architecture](assets/architecture.svg)',
+      '[Screenshot](assets/screenshot.png)',
+    ].join('\n');
+
+    expect(
+      rewriteBrainMarkdownLinks(input, {
+        brainId: 'coding',
+        currentPath: 'knowledge/example.md',
+        source: {
+          repository: 'GithubLarsKomo/coding-brain',
+          revision: 'abc123',
+          projectRoot: 'docs/project-memory',
+        },
+      }),
+    ).toBe(
+      [
+        '[Outside](https://github.com/GithubLarsKomo/coding-brain/blob/abc123/docs/README.md#usage)',
+        '[Schema](https://github.com/GithubLarsKomo/coding-brain/blob/abc123/docs/project-memory/schema.json)',
+        '![Architecture](https://raw.githubusercontent.com/GithubLarsKomo/coding-brain/abc123/docs/project-memory/knowledge/assets/architecture.svg)',
+        '[Screenshot](https://github.com/GithubLarsKomo/coding-brain/blob/abc123/docs/project-memory/knowledge/assets/screenshot.png)',
+      ].join('\n'),
+    );
+  });
+
+  it('keeps in-root Markdown navigation on portal routes even with source fallback configured', () => {
+    expect(
+      rewriteBrainMarkdownLinks('[Index](../INDEX.md)', {
+        brainId: 'coding',
+        currentPath: 'knowledge/example.md',
+        source: {
+          repository: 'GithubLarsKomo/coding-brain',
+          revision: 'abc123',
+          projectRoot: 'docs/project-memory',
+        },
+      }),
+    ).toBe('[Index](/brains/coding)');
   });
 
   it('rewrites Markdown reference definitions', () => {

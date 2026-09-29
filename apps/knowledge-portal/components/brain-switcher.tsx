@@ -1,3 +1,4 @@
+import { BrainGlyph, KnowledgeMark, SourceGlyph } from '@/components/knowledge-visuals';
 import { getBrainNavigation, type KnowledgeSourceClass } from '@/lib/brain-navigation';
 
 const labels: Record<KnowledgeSourceClass, string> = {
@@ -17,6 +18,7 @@ export async function BrainSwitcher({ activeId }: { activeId?: string }) {
       <div className="kp-section-kicker">Aktiver Wissensbereich</div>
       <details className="kp-brain-select">
         <summary className="kp-brain-select-summary">
+          <BrainGlyph id={active.id} label={active.label} className="kp-brain-glyph" />
           <span className="kp-brain-select-copy">
             <span className="kp-brain-select-label">{active.label}</span>
             <span className="kp-brain-select-description">
@@ -24,7 +26,7 @@ export async function BrainSwitcher({ activeId }: { activeId?: string }) {
             </span>
           </span>
           <span className="kp-brain-select-meta">
-            <SourceDot sourceClass={active.sourceClass} />
+            <SourceGlyph sourceClass={active.sourceClass} className="kp-source-glyph" />
             <svg aria-hidden="true" viewBox="0 0 20 20" className="kp-chevron">
               <path
                 d="m5.5 7.5 4.5 4.5 4.5-4.5"
@@ -53,6 +55,7 @@ export async function BrainSwitcher({ activeId }: { activeId?: string }) {
                   className="kp-brain-option"
                   data-active={isActive ? 'true' : 'false'}
                 >
+                  <BrainGlyph id={item.id} label={item.label} className="kp-brain-glyph" />
                   <span className="kp-brain-option-main">
                     <span className="kp-brain-option-label">{item.label}</span>
                     {item.description ? (
@@ -60,7 +63,7 @@ export async function BrainSwitcher({ activeId }: { activeId?: string }) {
                     ) : null}
                   </span>
                   <span className="kp-brain-option-state">
-                    <SourceDot sourceClass={item.sourceClass} />
+                    <SourceGlyph sourceClass={item.sourceClass} className="kp-source-glyph" />
                     <span>{labels[item.sourceClass]}</span>
                   </span>
                 </a>
@@ -73,21 +76,11 @@ export async function BrainSwitcher({ activeId }: { activeId?: string }) {
   );
 }
 
-function SourceDot({ sourceClass }: { sourceClass: KnowledgeSourceClass }) {
-  return (
-    <span
-      className="kp-source-dot"
-      data-source-class={sourceClass}
-      title={labels[sourceClass]}
-      aria-label={labels[sourceClass]}
-    />
-  );
-}
-
 export function SourceBoundaryNote() {
   return (
     <div className="kp-source-boundary-note">
-      Read-only Portal · Quellenautorität bleibt erhalten
+      <KnowledgeMark className="kp-boundary-mark" />
+      <span>Read-only Portal · Quellenautorität bleibt erhalten</span>
     </div>
   );
 }

@@ -1,8 +1,10 @@
 import { DocsDescription, DocsTitle } from 'fumadocs-ui/layouts/docs/page';
 import { DocumentActions } from '@/components/document-actions';
+import { BrainGlyph, KnowledgeMark } from '@/components/knowledge-visuals';
 import { KnowledgeStatus } from '@/components/knowledge-status';
 
 interface BrainDocumentHeaderProps {
+  brainId: string;
   brainLabel: string;
   title: string;
   description?: string;
@@ -13,6 +15,7 @@ interface BrainDocumentHeaderProps {
 }
 
 export function BrainDocumentHeader({
+  brainId,
   brainLabel,
   title,
   description,
@@ -23,6 +26,10 @@ export function BrainDocumentHeader({
 }: BrainDocumentHeaderProps) {
   return (
     <header className="kp-document-header">
+      <div className="kp-document-watermark" aria-hidden="true">
+        <KnowledgeMark className="kp-document-watermark-mark" />
+      </div>
+
       <nav className="kp-context-path" aria-label="Dokumentpfad">
         <span>Knowledge Portal</span>
         <span aria-hidden="true">/</span>
@@ -37,7 +44,10 @@ export function BrainDocumentHeader({
 
       <div className="kp-document-title-row">
         <div className="kp-document-heading">
-          <DocsTitle className="kp-document-title">{title}</DocsTitle>
+          <div className="kp-document-heading-line">
+            <BrainGlyph id={brainId} label={brainLabel} className="kp-document-brain-glyph" />
+            <DocsTitle className="kp-document-title">{title}</DocsTitle>
+          </div>
           {description ? (
             <DocsDescription className="kp-document-description">{description}</DocsDescription>
           ) : null}
