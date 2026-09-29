@@ -121,7 +121,6 @@ function safeDecodeURIComponent(value: string): string {
   }
 }
 
-
 export interface BrainMarkdownPresentation {
   title?: string;
   body: string;
