@@ -8,6 +8,7 @@ Architecture:
 
 - [Customization Architecture v1](docs/CUSTOMIZATION-ARCHITECTURE-v1.md)
 - [Customization Architecture v2](docs/CUSTOMIZATION-ARCHITECTURE-v2.md)
+- [Customization Architecture v3](docs/CUSTOMIZATION-ARCHITECTURE-v3.md)
 
 ## Runtime configuration
 
@@ -38,8 +39,9 @@ Optional:
 - `KNOWLEDGE_PORTAL_FEDERATION_REF` — default `main`
 - `KNOWLEDGE_PORTAL_FEDERATION_REGISTRY_PATH` — default `docs/super-memory/registry.json`
 - `KNOWLEDGE_PORTAL_GITHUB_API_URL` — default `https://api.github.com`
+- `KNOWLEDGE_PORTAL_BRAIN_SEARCH_CONCURRENCY` — concurrent canonical Brain search/index workers; default `4`, bounded to `1..12`
 
-The allowlist is comma-separated and fail-closed. An empty allowlist enables no Git-backed Brain.
+The allowlist is fail-closed. Use a comma-separated list for selected Brains. Set `KNOWLEDGE_PORTAL_BRAIN_ALLOWLIST=*` only when the deployment should expose every registry Brain whose status is `available`. An empty allowlist enables no Git-backed Brain.
 
 The federation registry remains authoritative for Brain repository, default branch and `projectMemoryRoot`. The portal does not maintain a parallel repository map.
 
