@@ -28,3 +28,9 @@ jobs:
 
       - name: Build Knowledge Portal
         run: pnpm --filter knowledge-portal build
+
+      - name: Verify runtime public assets packaging
+        run: |
+          test -f apps/knowledge-portal/public/brand/logo-dark.svg
+          test -f apps/knowledge-portal/public/brand/favicon.svg
+          grep -Fq 'COPY --from=builder /app/apps/knowledge-portal/public ./apps/knowledge-portal/public' apps/knowledge-portal/Dockerfile

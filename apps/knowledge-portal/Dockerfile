@@ -20,6 +20,7 @@ WORKDIR /app
 
 COPY --from=builder /app/apps/knowledge-portal/.next/standalone ./
 COPY --from=builder /app/apps/knowledge-portal/.next/static ./apps/knowledge-portal/.next/static
+COPY --from=builder /app/apps/knowledge-portal/public ./apps/knowledge-portal/public
 
 EXPOSE 3000
 
