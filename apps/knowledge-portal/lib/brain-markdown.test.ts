@@ -74,10 +74,11 @@ describe('rewriteBrainMarkdownLinks', () => {
   });
 });
 
-
 describe('prepareBrainMarkdown', () => {
   it('promotes the leading H1 into the portal document header', () => {
-    expect(prepareBrainMarkdown('# Coding Brain — Index\n\n**Brain type:** collection brain')).toEqual({
+    expect(
+      prepareBrainMarkdown('# Coding Brain — Index\n\n**Brain type:** collection brain'),
+    ).toEqual({
       title: 'Coding Brain — Index',
       body: '**Brain type:** collection brain',
     });
