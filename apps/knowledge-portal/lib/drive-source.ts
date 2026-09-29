@@ -28,6 +28,7 @@ function getDriveLoader(): DriveLoader {
       getAccessToken: getGoogleDriveAccessToken,
       sourceClass: 'evidence',
       baseDir: root.routePrefix || undefined,
+      slugPrefix: root.routePrefix || undefined,
       staleTime: 60_000,
     }),
   }));

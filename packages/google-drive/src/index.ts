@@ -80,6 +80,9 @@ export interface GoogleDriveOptions {
   /** Virtual source directory. This changes virtual paths, not public slugs. */
   baseDir?: string;
 
+  /** Optional public route prefix prepended to every page slug. */
+  slugPrefix?: string;
+
   /** Provenance class exposed on every page. Defaults to "evidence". */
   sourceClass?: string;
 
@@ -130,6 +133,8 @@ export function googleDrive(options: GoogleDriveOptions): DynamicSource<GoogleDr
   const staleTime = options.staleTime ?? 60_000;
   const maxDepth = options.maxDepth ?? 50;
   const baseDir = normalizeBaseDir(options.baseDir);
+  const slugPrefix = normalizeBaseDir(options.slugPrefix);
+  const slugPrefixSegments = slugPrefix ? slugPrefix.split('/').filter(Boolean) : [];
   let fileCache = new Map<string, GoogleDriveVirtualFile>();
 
   async function request(url: string): Promise<Response> {
@@ -228,8 +233,9 @@ export function googleDrive(options: GoogleDriveOptions): DynamicSource<GoogleDr
     segment: string,
     contentKind: GoogleDriveContentKind,
   ): GoogleDriveVirtualFile {
-    const slugs = [...segments, segment];
-    const virtualPath = joinVirtualPath(baseDir, ...slugs) + '.mdx';
+    const localSlugs = [...segments, segment];
+    const slugs = [...slugPrefixSegments, ...localSlugs];
+    const virtualPath = joinVirtualPath(baseDir, ...localSlugs) + '.mdx';
     const cacheKey = [
       file.id,
       file.modifiedTime ?? '',
