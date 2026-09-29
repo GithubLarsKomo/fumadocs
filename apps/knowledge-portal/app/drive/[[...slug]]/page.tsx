@@ -4,7 +4,12 @@ import { Markdown } from 'fumadocs-core/content/md';
 import { getTableOfContents } from 'fumadocs-core/content/toc';
 import { DocsBody, DocsPage } from 'fumadocs-ui/layouts/docs/page';
 import { DriveDocumentHeader } from '@/components/drive-document-header';
-import { driveRootUrl, getDriveRoots } from '@/lib/drive-config';
+import {
+  driveRootUrl,
+  findDriveRootByRoute,
+  getDriveRoots,
+  type DriveRootConfig,
+} from '@/lib/drive-config';
 import { getDriveSource } from '@/lib/drive-source';
 
 export const dynamic = 'force-dynamic';
@@ -58,6 +63,9 @@ export default async function DrivePage({ params }: DrivePageProps) {
     );
   }
 
+  const root = findDriveRootByRoute(slug);
+  if (root) return <DriveRootLanding root={root} />;
+
   const source = await getDriveSource();
   const page = source.getPage(slug);
 
@@ -82,6 +90,30 @@ export default async function DrivePage({ params }: DrivePageProps) {
   );
 }
 
+function DriveRootLanding({ root }: { root: DriveRootConfig }) {
+  return (
+    <DocsPage toc={[]} className="kp-doc-page" breadcrumb={{ enabled: false }}>
+      <DriveDocumentHeader
+        title={root.label}
+        description={root.description ?? 'Freigegebener Google-Drive-Wissensbereich.'}
+      />
+      <DocsBody className="kp-doc-body">
+        <p>
+          Dieser Bereich wird read-only aus dem konfigurierten Google-Drive-Ordner projiziert.
+          Wähle links einen Unterordner oder ein Dokument aus.
+        </p>
+        <p>
+          Google Drive bleibt Eigentümer der Quelldokumente; diese Portalroute ist nur die stabile
+          Einstiegsebene für den freigegebenen Root.
+        </p>
+        <p>
+          <a href="/drive">← Zur Übersicht aller Drive-Bereiche</a>
+        </p>
+      </DocsBody>
+    </DocsPage>
+  );
+}
+
 export async function generateMetadata({ params }: DrivePageProps): Promise<Metadata> {
   const { slug = [] } = await params;
 
@@ -89,6 +121,14 @@ export async function generateMetadata({ params }: DrivePageProps): Promise<Meta
     return {
       title: 'Drive Evidence',
       description: 'Read-only Zugriff auf freigegebene Wissensquellen und Originalartefakte.',
+    };
+  }
+
+  const root = findDriveRootByRoute(slug);
+  if (root) {
+    return {
+      title: root.label,
+      description: root.description ?? 'Freigegebener Google-Drive-Wissensbereich.',
     };
   }
 
