@@ -159,20 +159,28 @@ describe('googleDrive', () => {
       const url = new URL(raw);
 
       if (url.pathname === '/drive/v3/files') {
-        return json({
-          files: [
-            {
-              id: 'folder-1',
-              name: 'Architecture',
-              mimeType: 'application/vnd.google-apps.folder',
-            },
-            {
-              id: 'md-1',
-              name: 'README.md',
-              mimeType: 'text/markdown',
-            },
-          ],
-        });
+        const query = url.searchParams.get('q') ?? '';
+
+        if (query.includes("'root'")) {
+          return json({
+            files: [
+              {
+                id: 'folder-1',
+                name: 'Architecture',
+                mimeType: 'application/vnd.google-apps.folder',
+              },
+              {
+                id: 'md-1',
+                name: 'README.md',
+                mimeType: 'text/markdown',
+              },
+            ],
+          });
+        }
+
+        if (query.includes("'folder-1'")) {
+          return json({ files: [] });
+        }
       }
 
       throw new Error(`Unexpected request: ${url.href}`);
