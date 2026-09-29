@@ -2,10 +2,11 @@ import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { Markdown } from 'fumadocs-core/content/md';
 import { getTableOfContents } from 'fumadocs-core/content/toc';
-import { DocsBody, DocsDescription, DocsPage, DocsTitle } from 'fumadocs-ui/layouts/docs/page';
-import { KnowledgeStatus } from '@/components/knowledge-status';
+import { DocsBody, DocsPage } from 'fumadocs-ui/layouts/docs/page';
+import { BrainDocumentHeader } from '@/components/brain-document-header';
 import { getEnabledFederationBrain } from '@/lib/federation';
 import { getGitHubBrainSource } from '@/lib/github-brains';
+import { prepareBrainMarkdown } from '@/lib/brain-markdown';
 
 export const dynamic = 'force-dynamic';
 
@@ -31,11 +32,14 @@ export default async function BrainPage({ params }: BrainPageProps) {
     if (slug.length > 0) notFound();
 
     return (
-      <DocsPage toc={[]}>
-        <DocsTitle>{brain.label}</DocsTitle>
-        {brain.scope ? <DocsDescription>{brain.scope}</DocsDescription> : null}
-        <KnowledgeStatus sourceClass="canonical" sourceType="github-brain" />
-        <DocsBody>
+      <DocsPage toc={[]} className="kp-doc-page">
+        <BrainDocumentHeader
+          brainLabel={brain.label}
+          title={brain.label}
+          description={brain.scope}
+          sourceType="github-brain"
+        />
+        <DocsBody className="kp-doc-body">
           <p>
             Dieser Bereich wird read-only aus dem kanonischen Project-Memory des registrierten Child
             Brains projiziert.
@@ -46,19 +50,23 @@ export default async function BrainPage({ params }: BrainPageProps) {
   }
 
   const loaded = await page.data.load();
-  const toc = getTableOfContents(loaded.content);
+  const presentation = prepareBrainMarkdown(loaded.content);
+  const toc = getTableOfContents(presentation.body);
+  const title = presentation.title ?? page.data.title;
 
   return (
-    <DocsPage toc={toc}>
-      <DocsTitle>{page.data.title}</DocsTitle>
-      {page.data.description ? <DocsDescription>{page.data.description}</DocsDescription> : null}
-      <KnowledgeStatus
-        sourceClass="canonical"
+    <DocsPage toc={toc} className="kp-doc-page">
+      <BrainDocumentHeader
+        brainLabel={brain.label}
+        title={title}
+        description={page.data.description}
         sourceType={page.data.sourceType}
         sourceRevision={page.data.sourceRevision}
+        sourceUrl={page.data.sourceUrl}
+        sectionPath={slug.slice(0, -1)}
       />
-      <DocsBody>
-        <Markdown>{loaded.content}</Markdown>
+      <DocsBody className="kp-doc-body">
+        <Markdown>{presentation.body}</Markdown>
       </DocsBody>
     </DocsPage>
   );
@@ -78,9 +86,15 @@ export async function generateMetadata({ params }: BrainPageProps): Promise<Meta
   }
 
   const page = source.getPage(slug);
+  let title = page?.data.title ?? brain.label;
+
+  if (page) {
+    const loaded = await page.data.load();
+    title = prepareBrainMarkdown(loaded.content).title ?? title;
+  }
 
   return {
-    title: page?.data.title ?? brain.label,
+    title,
     description: page?.data.description ?? brain.scope,
   };
 }
