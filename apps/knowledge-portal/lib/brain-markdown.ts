@@ -120,3 +120,36 @@ function safeDecodeURIComponent(value: string): string {
     return value;
   }
 }
+
+
+export interface BrainMarkdownPresentation {
+  title?: string;
+  body: string;
+}
+
+export function prepareBrainMarkdown(markdown: string): BrainMarkdownPresentation {
+  const lines = markdown.split(/\r?\n/);
+  const firstContent = lines.findIndex((line) => line.trim().length > 0);
+
+  if (firstContent === -1) return { body: markdown };
+
+  const heading = /^#\s+(.+?)\s*$/.exec(lines[firstContent]);
+  if (!heading) return { body: markdown };
+
+  const title = cleanHeadingText(heading[1]);
+  lines.splice(firstContent, 1);
+
+  while (lines[firstContent]?.trim() === '') lines.splice(firstContent, 1);
+
+  return {
+    title: title || undefined,
+    body: lines.join('\n'),
+  };
+}
+
+function cleanHeadingText(value: string): string {
+  return value
+    .replace(/\[([^\]]+)\]\([^)]*\)/g, '$1')
+    .replace(/[*_~`]/g, '')
+    .trim();
+}
