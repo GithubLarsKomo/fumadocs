@@ -39,25 +39,33 @@ export function KnowledgeStatus({
       </span>
       {sourceType ? (
         <>
-          <span className="kp-status-separator" aria-hidden="true">·</span>
+          <span className="kp-status-separator" aria-hidden="true">
+            ·
+          </span>
           <span className="kp-status-detail">{formatSourceType(sourceType)}</span>
         </>
       ) : null}
       {contentKind ? (
         <>
-          <span className="kp-status-separator" aria-hidden="true">·</span>
+          <span className="kp-status-separator" aria-hidden="true">
+            ·
+          </span>
           <span className="kp-status-detail">{contentLabels[contentKind]}</span>
         </>
       ) : null}
       {date ? (
         <>
-          <span className="kp-status-separator" aria-hidden="true">·</span>
+          <span className="kp-status-separator" aria-hidden="true">
+            ·
+          </span>
           <span className="kp-status-detail">Stand {date}</span>
         </>
       ) : null}
       {revision ? (
         <>
-          <span className="kp-status-separator" aria-hidden="true">·</span>
+          <span className="kp-status-separator" aria-hidden="true">
+            ·
+          </span>
           <span className="kp-status-detail kp-status-revision" title={sourceRevision}>
             Revision {revision}
           </span>
