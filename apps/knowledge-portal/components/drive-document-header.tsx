@@ -1,10 +1,12 @@
 import { DocsDescription, DocsTitle } from 'fumadocs-ui/layouts/docs/page';
 import type { GoogleDriveContentKind } from 'fumadocs-google-drive';
+import { KnowledgeHistoryControls } from '@/components/knowledge-history';
 import { KnowledgeMark, SourceGlyph } from '@/components/knowledge-visuals';
 import { KnowledgeStatus } from '@/components/knowledge-status';
 
 interface DriveDocumentHeaderProps {
   title: string;
+  currentUrl: string;
   description?: string;
   contentKind?: GoogleDriveContentKind;
   modifiedTime?: string;
@@ -13,6 +15,7 @@ interface DriveDocumentHeaderProps {
 
 export function DriveDocumentHeader({
   title,
+  currentUrl,
   description,
   contentKind,
   modifiedTime,
@@ -42,6 +45,7 @@ export function DriveDocumentHeader({
             <DocsDescription className="kp-document-description">{description}</DocsDescription>
           ) : null}
         </div>
+        <KnowledgeHistoryControls url={currentUrl} title={title} sourceClass="evidence" />
       </div>
 
       <KnowledgeStatus
