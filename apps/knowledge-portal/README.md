@@ -11,6 +11,7 @@ Architecture:
 - [Customization Architecture v3](docs/CUSTOMIZATION-ARCHITECTURE-v3.md)
 - [Customization Architecture v4](docs/CUSTOMIZATION-ARCHITECTURE-v4.md)
 - [Customization Architecture v5](docs/CUSTOMIZATION-ARCHITECTURE-v5.md)
+- [Customization Architecture v6](docs/CUSTOMIZATION-ARCHITECTURE-v6.md)
 
 ## Runtime configuration
 
@@ -74,14 +75,18 @@ All provider credentials and tokens must remain server-side and must never be co
 
 ## Local / container behavior
 
-The portal redirects `/` to `/drive`.
+The portal exposes a branded home dashboard at `/`.
 
 Available routes include:
 
+- `/` — branded Knowledge Portal home;
+- `/search` — faceted search across authority classes and sources;
+- `/status` — source-health dashboard;
 - `/drive` — Google Drive evidence/source documents;
 - `/brains/<brainId>` — allowlisted canonical Child Brain Project-Memory;
-- `/api/health`;
-- `/api/search` — combined Drive + enabled Child Brain + optional Adaptive Brain search.
+- `/api/health` — detailed source health;
+- `/api/search` — combined Drive + enabled Child Brain + optional Adaptive Brain search;
+- `/api/drive/files/<fileId>` — allowlisted inline Evidence preview for supported binary formats.
 
 If federation or one Child Brain search source fails, the remaining search sources continue to work. Adaptive Brain failure never disables canonical/evidence search.
 
