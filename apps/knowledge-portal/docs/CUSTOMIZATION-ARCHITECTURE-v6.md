@@ -73,6 +73,21 @@ An empty source is not treated as a source failure.
 
 The dashboard reads source state only. It does not mutate or repair any upstream system.
 
+### Versioned diagnostic JSON export
+
+`/api/health/export` returns the current health report as a downloadable diagnostic document.
+
+The export contract includes:
+
+- `schema = ratzeburg-ai-brain/source-health`;
+- semantic `schemaVersion`;
+- ISO-8601 `generatedAt`;
+- portal product and release;
+- optional build revision when a supported non-secret commit environment variable is available;
+- the sanitized source-health report.
+
+The download filename contains both schema version and generation timestamp. Runtime credentials, provider tokens, service-account payloads and Drive folder IDs are deliberately excluded.
+
 ## Evidence Viewer
 
 Supported Drive Evidence can be viewed inline:

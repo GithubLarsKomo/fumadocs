@@ -85,6 +85,7 @@ Available routes include:
 - `/drive` — Google Drive evidence/source documents;
 - `/brains/<brainId>` — allowlisted canonical Child Brain Project-Memory;
 - `/api/health` — detailed source health;
+- `/api/health/export` — versioned and timestamped diagnostic JSON download;
 - `/api/search` — combined Drive + enabled Child Brain + optional Adaptive Brain search;
 - `/api/drive/files/<fileId>` — allowlisted inline Evidence preview for supported binary formats.
 

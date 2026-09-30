@@ -1780,3 +1780,49 @@ header:has(.kp-nav-brand) a:hover {
     grid-template-columns: 1fr;
   }
 }
+
+/* Versioned status JSON export */
+
+.kp-status-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.65rem;
+  margin-top: 1rem;
+}
+
+.kp-status-actions a {
+  display: inline-flex;
+  min-height: 2.4rem;
+  align-items: center;
+  border: 1px solid color-mix(in oklab, var(--kp-brand) 54%, var(--color-fd-border));
+  border-radius: 0.6rem;
+  background: color-mix(in oklab, var(--kp-brand) 13%, var(--color-fd-card));
+  padding: 0.45rem 0.75rem;
+  color: var(--color-fd-foreground);
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.kp-status-actions a:hover {
+  background: color-mix(in oklab, var(--kp-brand) 20%, var(--color-fd-card));
+}
+
+.kp-status-actions span,
+.kp-health-footer p {
+  color: var(--color-fd-muted-foreground);
+  font-size: 0.67rem;
+}
+
+.kp-health-footer {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 0.45rem 1rem;
+  margin-top: 0.8rem;
+}
+
+.kp-health-footer p {
+  margin: 0;
+}
