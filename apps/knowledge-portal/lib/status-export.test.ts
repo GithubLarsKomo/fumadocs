@@ -38,6 +38,7 @@ describe('status export', () => {
     const document = createStatusExport(health, {
       generatedAt: '2026-09-30T06:48:12.345Z',
       env: {
+        NODE_ENV: 'test',
         SOURCE_COMMIT: 'f4f9621072af0706648b387f6fe6892a4a56cd3d',
       },
     });
@@ -53,6 +54,7 @@ describe('status export', () => {
     const document = createStatusExport(health, {
       generatedAt: '2026-09-30T06:48:12.345Z',
       env: {
+        NODE_ENV: 'test',
         GOOGLE_SERVICE_ACCOUNT_JSON_B64: 'secret',
         KNOWLEDGE_PORTAL_GITHUB_TOKEN: 'secret',
       },
