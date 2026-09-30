@@ -36,11 +36,15 @@ export default async function HomePage() {
 
         <div className="kp-home-actions">
           <a className="kp-home-primary-action" href="/search">
-            <span className="kp-home-action-glyph" aria-hidden="true">⌕</span>
+            <span className="kp-home-action-glyph" aria-hidden="true">
+              ⌕
+            </span>
             <span>Knowledge Search</span>
           </a>
           <a className="kp-home-secondary-action" href="/status">
-            <span className="kp-home-action-glyph" aria-hidden="true">●</span>
+            <span className="kp-home-action-glyph" aria-hidden="true">
+              ●
+            </span>
             <span>Source Health</span>
           </a>
           <a className="kp-home-secondary-action" href="/drive">
@@ -91,7 +95,9 @@ export default async function HomePage() {
                   <strong>{item.label}</strong>
                   <span>{item.description ?? 'Kanonischer Wissensbereich'}</span>
                 </span>
-                <span className="kp-home-card-arrow" aria-hidden="true">→</span>
+                <span className="kp-home-card-arrow" aria-hidden="true">
+                  →
+                </span>
               </a>
             ))}
           </div>
