@@ -28,7 +28,9 @@ export default async function BrainPage({ params }: BrainPageProps) {
 
   if (!brain || !source) notFound();
 
-  const currentUrl = `/brains/${brainId}${slug.length ? `/${slug.join('/')}` : ''}`;
+  const currentUrl = `/brains/${encodeURIComponent(brainId)}${
+    slug.length ? `/${slug.map(encodeURIComponent).join('/')}` : ''
+  }`;
   const page = source.getPage(slug);
 
   if (!page) {
