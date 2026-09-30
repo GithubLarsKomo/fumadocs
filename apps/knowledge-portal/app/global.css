@@ -1791,7 +1791,8 @@ header:has(.kp-nav-brand) a:hover {
   margin-top: 1rem;
 }
 
-.kp-status-actions a {
+.kp-status-actions a,
+.kp-status-actions button {
   display: inline-flex;
   min-height: 2.4rem;
   align-items: center;
@@ -1800,13 +1801,24 @@ header:has(.kp-nav-brand) a:hover {
   background: color-mix(in oklab, var(--kp-brand) 13%, var(--color-fd-card));
   padding: 0.45rem 0.75rem;
   color: var(--color-fd-foreground);
+  font: inherit;
   font-size: 0.75rem;
   font-weight: 700;
   text-decoration: none;
 }
 
-.kp-status-actions a:hover {
+.kp-status-actions button {
+  cursor: pointer;
+}
+
+.kp-status-actions a:hover,
+.kp-status-actions button:hover:not(:disabled) {
   background: color-mix(in oklab, var(--kp-brand) 20%, var(--color-fd-card));
+}
+
+.kp-status-actions button:disabled {
+  cursor: wait;
+  opacity: 0.65;
 }
 
 .kp-status-actions span,
