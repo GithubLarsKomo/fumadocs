@@ -73,28 +73,32 @@ export async function getSourceHealth(): Promise<SourceHealthReport> {
     });
   }
 
-  const brainItems = await mapWithConcurrency(brains, 4, async (brain): Promise<SourceHealthItem> => {
-    try {
-      const source = await getGitHubBrainSource(brain.brainId);
-      const count = source?.getPages().length ?? 0;
-      return {
-        id: brain.brainId,
-        label: brain.label,
-        kind: 'canonical',
-        status: count > 0 ? 'healthy' : 'empty',
-        itemCount: count,
-        detail: count > 0 ? 'Canonical Project Memory erreichbar' : 'Keine projizierten Seiten',
-      };
-    } catch (error) {
-      return {
-        id: brain.brainId,
-        label: brain.label,
-        kind: 'canonical',
-        status: 'unavailable',
-        detail: errorMessage(error),
-      };
-    }
-  });
+  const brainItems = await mapWithConcurrency(
+    brains,
+    4,
+    async (brain): Promise<SourceHealthItem> => {
+      try {
+        const source = await getGitHubBrainSource(brain.brainId);
+        const count = source?.getPages().length ?? 0;
+        return {
+          id: brain.brainId,
+          label: brain.label,
+          kind: 'canonical',
+          status: count > 0 ? 'healthy' : 'empty',
+          itemCount: count,
+          detail: count > 0 ? 'Canonical Project Memory erreichbar' : 'Keine projizierten Seiten',
+        };
+      } catch (error) {
+        return {
+          id: brain.brainId,
+          label: brain.label,
+          kind: 'canonical',
+          status: 'unavailable',
+          detail: errorMessage(error),
+        };
+      }
+    },
+  );
   sources.push(...brainItems);
 
   const graphConfigured = Boolean(process.env.BRAIN_GRAPH_SEARCH_URL);
@@ -103,7 +107,9 @@ export async function getSourceHealth(): Promise<SourceHealthReport> {
     label: 'Adaptive Brain',
     kind: 'derived',
     status: graphConfigured ? 'configured' : 'disabled',
-    detail: graphConfigured ? 'Derived search facade konfiguriert' : 'Optionaler Kanal nicht konfiguriert',
+    detail: graphConfigured
+      ? 'Derived search facade konfiguriert'
+      : 'Optionaler Kanal nicht konfiguriert',
   });
 
   const degraded = sources.filter((item) => item.status === 'unavailable').length;
