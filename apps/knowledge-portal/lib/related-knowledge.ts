@@ -85,7 +85,7 @@ async function findBrainBacklinks(
   return output.slice(0, limit);
 }
 
-function containsPortalLink(markdown: string, url: string): boolean {
+export function containsPortalLink(markdown: string, url: string): boolean {
   return markdown.includes(`](${url})`) || markdown.includes(`](${url}#`);
 }
 
