@@ -3,10 +3,7 @@ import { getGoogleDriveAccessToken } from '@/lib/service-account';
 
 const previewMimeTypes = new Set(['application/pdf', 'image/png', 'image/jpeg', 'image/webp']);
 
-export async function GET(
-  _request: Request,
-  { params }: { params: Promise<{ fileId: string }> },
-) {
+export async function GET(_request: Request, { params }: { params: Promise<{ fileId: string }> }) {
   const { fileId } = await params;
   const source = await getDriveSource();
   const page = source.getPages().find((candidate) => candidate.data.driveFile.id === fileId);
