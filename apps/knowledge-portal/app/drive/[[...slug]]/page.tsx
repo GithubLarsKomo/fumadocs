@@ -103,9 +103,7 @@ export default async function DrivePage({ params }: DrivePageProps) {
 
 async function DriveRootLanding({ root }: { root: DriveRootConfig }) {
   const currentUrl = driveRootUrl(root);
-  let access:
-    | Awaited<ReturnType<typeof getSingleDriveRootAccess>>
-    | undefined;
+  let access: Awaited<ReturnType<typeof getSingleDriveRootAccess>> | undefined;
 
   try {
     access = await getSingleDriveRootAccess(root);
