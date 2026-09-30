@@ -1,6 +1,6 @@
 'use client';
 
-import { useMemo, useState } from 'react';
+import { useMemo, useState, type FormEvent } from 'react';
 import type { BrainNavigationItem, KnowledgeSourceClass } from '@/lib/brain-navigation';
 import type { KnowledgeSearchResult } from '@/lib/search/knowledge-search';
 
@@ -29,7 +29,7 @@ export function FacetedSearch({ sources }: FacetedSearchProps) {
     [sources, sourceClass],
   );
 
-  async function runSearch(event?: React.FormEvent) {
+  async function runSearch(event?: FormEvent) {
     event?.preventDefault();
     const value = query.trim();
     if (!value) return;
@@ -117,10 +117,10 @@ export function FacetedSearch({ sources }: FacetedSearchProps) {
               <span data-source-class={result.sourceClass}>{classLabels[result.sourceClass]}</span>
               <span>{result.sourceLabel}</span>
             </div>
-            <strong>{String(result.content)}</strong>
+            <strong>{plainText(String(result.content))}</strong>
             {result.breadcrumbs?.length ? (
               <span className="kp-search-result-breadcrumbs">
-                {result.breadcrumbs.filter(Boolean).join(' · ')}
+                {result.breadcrumbs.filter(Boolean).map(String).map(plainText).join(' · ')}
               </span>
             ) : null}
           </a>
@@ -132,4 +132,8 @@ export function FacetedSearch({ sources }: FacetedSearchProps) {
       </div>
     </section>
   );
+}
+
+function plainText(value: string): string {
+  return value.replace(/<\\/?mark>/gi, '');
 }
