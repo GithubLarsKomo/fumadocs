@@ -65,7 +65,7 @@ export default async function DrivePage({ params }: DrivePageProps) {
   const page = source.getPage(slug);
   if (!page) notFound();
 
-  const currentUrl = `/drive/${slug.join('/')}`;
+  const currentUrl = `/drive/${slug.map(encodeURIComponent).join('/')}`;
   const loaded = await page.data.load();
   const toc = page.data.contentKind === 'evidence' ? [] : getTableOfContents(loaded.content);
   const related = await getRelatedKnowledge({
