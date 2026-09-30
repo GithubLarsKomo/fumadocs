@@ -22,12 +22,8 @@ export default async function StatusPage() {
           unavailable bedeutet einen tatsächlichen Quellfehler.
         </p>
         <div className="kp-status-actions">
-          <a href="/api/health/export">
-            JSON-Diagnose exportieren
-          </a>
-          <span>
-            Schema v{STATUS_EXPORT_SCHEMA_VERSION} · beim Download automatisch datiert
-          </span>
+          <a href="/api/health/export">JSON-Diagnose exportieren</a>
+          <span>Schema v{STATUS_EXPORT_SCHEMA_VERSION} · beim Download automatisch datiert</span>
         </div>
       </header>
 
