@@ -1709,3 +1709,74 @@ header:has(.kp-nav-brand) a:hover {
     height: 65vh;
   }
 }
+
+/* Runtime diagnostics and persistent v6 navigation */
+
+.kp-portal-tools {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.35rem;
+  margin-top: 0.55rem;
+}
+
+.kp-portal-tools a {
+  display: flex;
+  min-height: 2rem;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--color-fd-border);
+  border-radius: 0.5rem;
+  background: color-mix(in oklab, var(--color-fd-card) 94%, var(--kp-brand) 6%);
+  padding: 0.3rem 0.4rem;
+  color: var(--color-fd-muted-foreground);
+  font-size: 0.62rem;
+  font-weight: 680;
+  line-height: 1.15;
+  text-align: center;
+  text-decoration: none;
+}
+
+.kp-portal-tools a:hover {
+  border-color: color-mix(in oklab, var(--kp-brand) 42%, var(--color-fd-border));
+  color: var(--color-fd-foreground);
+}
+
+.kp-drive-access {
+  display: flex;
+  flex-direction: column;
+  gap: 0.28rem;
+  margin: 0 0 1.2rem;
+  border: 1px solid var(--color-fd-border);
+  border-radius: 0.7rem;
+  background: var(--color-fd-card);
+  padding: 0.75rem 0.85rem;
+}
+
+.kp-drive-access strong {
+  font-size: 0.8rem;
+}
+
+.kp-drive-access span {
+  color: var(--color-fd-muted-foreground);
+  font-size: 0.72rem;
+  line-height: 1.45;
+}
+
+.kp-drive-access[data-status='healthy'] {
+  border-color: color-mix(in oklab, var(--kp-teal) 45%, var(--color-fd-border));
+}
+
+.kp-drive-access[data-status='empty'] {
+  border-color: color-mix(in oklab, var(--kp-amber) 50%, var(--color-fd-border));
+}
+
+.kp-drive-access[data-status='unavailable'] {
+  border-color: color-mix(in oklab, var(--kp-orange) 62%, var(--color-fd-border));
+  background: color-mix(in oklab, var(--color-fd-card) 94%, var(--kp-orange) 6%);
+}
+
+@media (max-width: 767px) {
+  .kp-portal-tools {
+    grid-template-columns: 1fr;
+  }
+}

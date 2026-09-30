@@ -22,6 +22,18 @@ export async function githubRequest(path: string): Promise<Response> {
   });
 
   if (!response.ok) {
+    if ((response.status === 403 || response.status === 404) && !token) {
+      throw new Error(
+        `GitHub request failed with HTTP ${response.status} for ${path}. KNOWLEDGE_PORTAL_GITHUB_TOKEN is not configured; private federation repositories require a read token.`,
+      );
+    }
+
+    if ((response.status === 403 || response.status === 404) && token) {
+      throw new Error(
+        `GitHub request failed with HTTP ${response.status} for ${path}. Verify KNOWLEDGE_PORTAL_GITHUB_TOKEN has read access to the private repository.`,
+      );
+    }
+
     throw new Error(`GitHub request failed with HTTP ${response.status} for ${path}.`);
   }
 

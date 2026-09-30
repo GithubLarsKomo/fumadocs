@@ -12,6 +12,7 @@ import {
   getDriveRoots,
   type DriveRootConfig,
 } from '@/lib/drive-config';
+import { getSingleDriveRootAccess } from '@/lib/drive-health';
 import { getDriveSource } from '@/lib/drive-source';
 import { getRelatedKnowledge } from '@/lib/related-knowledge';
 
@@ -100,8 +101,15 @@ export default async function DrivePage({ params }: DrivePageProps) {
   );
 }
 
-function DriveRootLanding({ root }: { root: DriveRootConfig }) {
+async function DriveRootLanding({ root }: { root: DriveRootConfig }) {
   const currentUrl = driveRootUrl(root);
+  let access: Awaited<ReturnType<typeof getSingleDriveRootAccess>> | undefined;
+
+  try {
+    access = await getSingleDriveRootAccess(root);
+  } catch {
+    access = undefined;
+  }
 
   return (
     <DocsPage toc={[]} className="kp-doc-page" breadcrumb={{ enabled: false }}>
@@ -111,6 +119,18 @@ function DriveRootLanding({ root }: { root: DriveRootConfig }) {
         description={root.description ?? 'Freigegebener Google-Drive-Wissensbereich.'}
       />
       <DocsBody className="kp-doc-body">
+        {access ? (
+          <div className="kp-drive-access" data-status={access.status}>
+            <strong>
+              {access.status === 'healthy'
+                ? 'Drive-Zugriff aktiv'
+                : access.status === 'empty'
+                  ? 'Drive-Zugriff aktiv, aber keine Inhalte sichtbar'
+                  : 'Drive-Zugriff nicht möglich'}
+            </strong>
+            <span>{access.detail}</span>
+          </div>
+        ) : null}
         <p>
           Dieser Bereich wird read-only aus dem konfigurierten Google-Drive-Ordner projiziert. Wähle
           links einen Unterordner oder ein Dokument aus.

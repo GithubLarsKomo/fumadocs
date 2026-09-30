@@ -1,5 +1,4 @@
-import { getDriveRoots } from '@/lib/drive-config';
-import { getDriveSource } from '@/lib/drive-source';
+import { getDriveRootAccess } from '@/lib/drive-health';
 import { getEnabledFederationBrains } from '@/lib/federation';
 import { getGitHubBrainSource } from '@/lib/github-brains';
 
@@ -46,23 +45,17 @@ export async function getSourceHealth(): Promise<SourceHealthReport> {
   }
 
   try {
-    const roots = getDriveRoots();
-    const drive = await getDriveSource();
-    const pages = drive.getPages();
-
-    for (const root of roots) {
-      const count = root.routePrefix
-        ? pages.filter((page: { slugs: string[] }) => page.slugs[0] === root.routePrefix).length
-        : pages.length;
-      sources.push({
+    const driveRoots = await getDriveRootAccess();
+    sources.push(
+      ...driveRoots.map((root): SourceHealthItem => ({
         id: `drive:${root.routePrefix || root.id}`,
         label: root.label,
         kind: 'evidence',
-        status: count > 0 ? 'healthy' : 'empty',
-        itemCount: count,
-        detail: count > 0 ? 'Drive subtree erreichbar' : 'Keine projizierten Dateien',
-      });
-    }
+        status: root.status,
+        itemCount: root.directChildren,
+        detail: root.detail,
+      })),
+    );
   } catch (error) {
     sources.push({
       id: 'drive',
