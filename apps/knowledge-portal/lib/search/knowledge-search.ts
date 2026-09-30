@@ -50,7 +50,7 @@ export async function searchKnowledge(
 
   return deduplicate(enriched)
     .filter((result) => !options.sourceClass || result.sourceClass === options.sourceClass)
-    .filter((result) => !options.sourceId || result.sourceId === options.sourceId)
+    .filter((result) => !options.sourceId || matchesSourceId(result, options.sourceId))
     .slice(0, limit);
 }
 
@@ -88,6 +88,12 @@ function enrichGraphResult(result: SortedResult): KnowledgeSearchResult {
     sourceId: brainId ? `graph:${brainId}` : 'graph',
     sourceLabel: brainId ? `Adaptive Brain · ${brainId}` : 'Adaptive Brain',
   };
+}
+
+function matchesSourceId(result: KnowledgeSearchResult, sourceId: string): boolean {
+  if (sourceId === 'drive') return result.sourceClass === 'evidence';
+  if (sourceId === 'graph') return result.sourceClass === 'derived';
+  return result.sourceId === sourceId;
 }
 
 function normalizeLimit(value?: number): number {
