@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import { StatusExportActions } from '@/components/status-export-actions';
 import { getSourceHealth } from '@/lib/source-health';
 import { STATUS_EXPORT_SCHEMA_VERSION } from '@/lib/status-export';
 
@@ -21,10 +22,7 @@ export default async function StatusPage() {
           Sichtbarkeit der föderierten Quellen. Empty bedeutet erreichbar ohne projizierte Seiten;
           unavailable bedeutet einen tatsächlichen Quellfehler.
         </p>
-        <div className="kp-status-actions">
-          <a href="/api/health/export">JSON-Diagnose exportieren</a>
-          <span>Schema v{STATUS_EXPORT_SCHEMA_VERSION} · beim Download automatisch datiert</span>
-        </div>
+        <StatusExportActions schemaVersion={STATUS_EXPORT_SCHEMA_VERSION} />
       </header>
 
       <section className="kp-health-summary">
