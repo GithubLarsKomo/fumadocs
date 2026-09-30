@@ -1,0 +1,27 @@
+name: Knowledge Portal Runtime Format Preview
+
+on:
+  push:
+    branches:
+      - fix/knowledge-portal-runtime-diagnostics
+
+jobs:
+  format-preview:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v6
+        with:
+          node-version: 24
+          cache: pnpm
+      - run: pnpm i --frozen-lockfile
+      - name: Format runtime diagnostic files
+        run: |
+          pnpm exec oxfmt \
+            'apps/knowledge-portal/app/drive/[[...slug]]/page.tsx' \
+            apps/knowledge-portal/app/global.css \
+            apps/knowledge-portal/lib/drive-health.ts \
+            apps/knowledge-portal/lib/source-health.ts
+      - name: Show formatter diff
+        run: git diff
