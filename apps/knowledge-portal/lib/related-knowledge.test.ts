@@ -10,8 +10,8 @@ describe('containsPortalLink', () => {
   });
 
   it('ignores plain text mentions', () => {
-    expect(containsPortalLink('See /brains/coding/topic for context.', '/brains/coding/topic')).toBe(
-      false,
-    );
+    expect(
+      containsPortalLink('See /brains/coding/topic for context.', '/brains/coding/topic'),
+    ).toBe(false);
   });
 });
