@@ -90,7 +90,7 @@ function enrichGraphResult(result: SortedResult): KnowledgeSearchResult {
   };
 }
 
-function matchesSourceId(result: KnowledgeSearchResult, sourceId: string): boolean {
+export function matchesSourceId(result: KnowledgeSearchResult, sourceId: string): boolean {
   if (sourceId === 'drive') return result.sourceClass === 'evidence';
   if (sourceId === 'graph') return result.sourceClass === 'derived';
   return result.sourceId === sourceId;
