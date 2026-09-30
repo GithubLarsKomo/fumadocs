@@ -47,16 +47,14 @@ export async function getSourceHealth(): Promise<SourceHealthReport> {
   try {
     const driveRoots = await getDriveRootAccess();
     sources.push(
-      ...driveRoots.map(
-        (root): SourceHealthItem => ({
-          id: `drive:${root.routePrefix || root.id}`,
-          label: root.label,
-          kind: 'evidence',
-          status: root.status,
-          itemCount: root.directChildren,
-          detail: root.detail,
-        }),
-      ),
+      ...driveRoots.map((root): SourceHealthItem => ({
+        id: `drive:${root.routePrefix || root.id}`,
+        label: root.label,
+        kind: 'evidence',
+        status: root.status,
+        itemCount: root.directChildren,
+        detail: root.detail,
+      })),
     );
   } catch (error) {
     sources.push({
