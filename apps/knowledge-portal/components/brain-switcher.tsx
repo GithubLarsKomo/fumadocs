@@ -72,6 +72,12 @@ export async function BrainSwitcher({ activeId }: { activeId?: string }) {
           </div>
         </div>
       </details>
+
+      <nav className="kp-portal-tools" aria-label="Portal Werkzeuge">
+        <a href="/">Home</a>
+        <a href="/search">Knowledge Search</a>
+        <a href="/status">Source Health</a>
+      </nav>
     </section>
   );
 }
