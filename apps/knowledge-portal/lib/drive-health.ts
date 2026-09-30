@@ -34,9 +34,7 @@ export async function getDriveRootAccess(): Promise<DriveRootAccess[]> {
   return Promise.all(roots.map((root) => probeDriveRoot(root, token)));
 }
 
-export async function getSingleDriveRootAccess(
-  root: DriveRootConfig,
-): Promise<DriveRootAccess> {
+export async function getSingleDriveRootAccess(root: DriveRootConfig): Promise<DriveRootAccess> {
   const token = await getGoogleDriveAccessToken();
   return probeDriveRoot(root, token);
 }
