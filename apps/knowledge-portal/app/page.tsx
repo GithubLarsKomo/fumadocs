@@ -1,3 +1,4 @@
+import { PersonalKnowledgePanel } from '@/components/knowledge-history';
 import { BrainGlyph, KnowledgeMark, SourceGlyph } from '@/components/knowledge-visuals';
 import { getBrainNavigation } from '@/lib/brain-navigation';
 
@@ -34,16 +35,18 @@ export default async function HomePage() {
         </div>
 
         <div className="kp-home-actions">
-          {canonical[0] ? (
-            <a className="kp-home-primary-action" href={canonical[0].url}>
-              <BrainGlyph
-                id={canonical[0].id}
-                label={canonical[0].label}
-                className="kp-home-action-glyph"
-              />
-              <span>Child Brains öffnen</span>
-            </a>
-          ) : null}
+          <a className="kp-home-primary-action" href="/search">
+            <span className="kp-home-action-glyph" aria-hidden="true">
+              ⌕
+            </span>
+            <span>Knowledge Search</span>
+          </a>
+          <a className="kp-home-secondary-action" href="/status">
+            <span className="kp-home-action-glyph" aria-hidden="true">
+              ●
+            </span>
+            <span>Source Health</span>
+          </a>
           <a className="kp-home-secondary-action" href="/drive">
             <SourceGlyph sourceClass="evidence" className="kp-home-action-glyph" />
             <span>Drive Evidence</span>
@@ -71,6 +74,8 @@ export default async function HomePage() {
           description="Suche und Graph-Projektionen unterstützen Retrieval, übernehmen aber keine Autorität."
         />
       </section>
+
+      <PersonalKnowledgePanel />
 
       {featured.length > 0 ? (
         <section className="kp-home-brains">

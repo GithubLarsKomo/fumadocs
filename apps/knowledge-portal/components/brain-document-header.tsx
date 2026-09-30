@@ -1,5 +1,6 @@
 import { DocsDescription, DocsTitle } from 'fumadocs-ui/layouts/docs/page';
 import { DocumentActions } from '@/components/document-actions';
+import { KnowledgeHistoryControls } from '@/components/knowledge-history';
 import { BrainGlyph, KnowledgeMark } from '@/components/knowledge-visuals';
 import { KnowledgeStatus } from '@/components/knowledge-status';
 
@@ -7,6 +8,7 @@ interface BrainDocumentHeaderProps {
   brainId: string;
   brainLabel: string;
   title: string;
+  currentUrl: string;
   description?: string;
   sourceType?: string;
   sourceRevision?: string;
@@ -18,6 +20,7 @@ export function BrainDocumentHeader({
   brainId,
   brainLabel,
   title,
+  currentUrl,
   description,
   sourceType,
   sourceRevision,
@@ -52,7 +55,10 @@ export function BrainDocumentHeader({
             <DocsDescription className="kp-document-description">{description}</DocsDescription>
           ) : null}
         </div>
-        <DocumentActions sourceUrl={sourceUrl} />
+        <div className="kp-document-toolbar">
+          <KnowledgeHistoryControls url={currentUrl} title={title} sourceClass="canonical" />
+          <DocumentActions sourceUrl={sourceUrl} />
+        </div>
       </div>
 
       <KnowledgeStatus

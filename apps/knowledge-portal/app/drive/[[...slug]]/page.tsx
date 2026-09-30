@@ -4,6 +4,8 @@ import { Markdown } from 'fumadocs-core/content/md';
 import { getTableOfContents } from 'fumadocs-core/content/toc';
 import { DocsBody, DocsPage } from 'fumadocs-ui/layouts/docs/page';
 import { DriveDocumentHeader } from '@/components/drive-document-header';
+import { EvidenceViewer } from '@/components/evidence-viewer';
+import { RelatedKnowledge } from '@/components/related-knowledge';
 import {
   driveRootUrl,
   findDriveRootByRoute,
@@ -11,13 +13,12 @@ import {
   type DriveRootConfig,
 } from '@/lib/drive-config';
 import { getDriveSource } from '@/lib/drive-source';
+import { getRelatedKnowledge } from '@/lib/related-knowledge';
 
 export const dynamic = 'force-dynamic';
 
 interface DrivePageProps {
-  params: Promise<{
-    slug?: string[];
-  }>;
+  params: Promise<{ slug?: string[] }>;
 }
 
 export default async function DrivePage({ params }: DrivePageProps) {
@@ -30,6 +31,7 @@ export default async function DrivePage({ params }: DrivePageProps) {
       <DocsPage toc={[]} className="kp-doc-page" breadcrumb={{ enabled: false }}>
         <DriveDocumentHeader
           title="Drive Evidence"
+          currentUrl="/drive"
           description="Read-only Zugriff auf freigegebene Wissensquellen und Originalartefakte."
         />
         <DocsBody className="kp-doc-body">
@@ -53,11 +55,6 @@ export default async function DrivePage({ params }: DrivePageProps) {
             Google Drive bleibt Eigentümer der Quelldokumente. Eine Übernahme in kanonisches Wissen
             erfolgt nicht automatisch.
           </p>
-          <p>
-            Wichtige visuelle und binäre Artefakte liegen im verbundenen Drive-Bereich (bevorzugt
-            unter <code>Assets/</code>) und werden hier als Evidence mit Link zum Original
-            bereitgestellt.
-          </p>
         </DocsBody>
       </DocsPage>
     );
@@ -68,33 +65,49 @@ export default async function DrivePage({ params }: DrivePageProps) {
 
   const source = await getDriveSource();
   const page = source.getPage(slug);
-
   if (!page) notFound();
 
+  const currentUrl = `/drive/${slug.map(encodeURIComponent).join('/')}`;
   const loaded = await page.data.load();
-  const toc = getTableOfContents(loaded.content);
+  const toc = page.data.contentKind === 'evidence' ? [] : getTableOfContents(loaded.content);
+  const related = await getRelatedKnowledge({
+    title: page.data.title,
+    currentUrl,
+    limit: 8,
+  });
 
   return (
     <DocsPage toc={toc} className="kp-doc-page" breadcrumb={{ enabled: false }}>
       <DriveDocumentHeader
         title={page.data.title}
+        currentUrl={currentUrl}
         description={page.data.description}
         sourceType={page.data.sourceType}
         contentKind={page.data.contentKind}
         modifiedTime={page.data.driveFile.modifiedTime}
       />
-      <DocsBody className="kp-doc-body">
-        <Markdown>{loaded.content}</Markdown>
-      </DocsBody>
+
+      {page.data.contentKind === 'evidence' ? (
+        <EvidenceViewer file={page.data.driveFile} />
+      ) : (
+        <DocsBody className="kp-doc-body">
+          <Markdown>{loaded.content}</Markdown>
+        </DocsBody>
+      )}
+
+      <RelatedKnowledge items={related} />
     </DocsPage>
   );
 }
 
 function DriveRootLanding({ root }: { root: DriveRootConfig }) {
+  const currentUrl = driveRootUrl(root);
+
   return (
     <DocsPage toc={[]} className="kp-doc-page" breadcrumb={{ enabled: false }}>
       <DriveDocumentHeader
         title={root.label}
+        currentUrl={currentUrl}
         description={root.description ?? 'Freigegebener Google-Drive-Wissensbereich.'}
       />
       <DocsBody className="kp-doc-body">
@@ -135,11 +148,7 @@ export async function generateMetadata({ params }: DrivePageProps): Promise<Meta
   const source = await getDriveSource();
   const page = source.getPage(slug);
 
-  if (!page) {
-    return {
-      title: 'Nicht gefunden',
-    };
-  }
+  if (!page) return { title: 'Nicht gefunden' };
 
   return {
     title: page.data.title,

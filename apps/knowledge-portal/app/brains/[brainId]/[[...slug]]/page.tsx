@@ -4,9 +4,11 @@ import { Markdown } from 'fumadocs-core/content/md';
 import { getTableOfContents } from 'fumadocs-core/content/toc';
 import { DocsBody, DocsPage } from 'fumadocs-ui/layouts/docs/page';
 import { BrainDocumentHeader } from '@/components/brain-document-header';
+import { RelatedKnowledge } from '@/components/related-knowledge';
 import { getEnabledFederationBrain } from '@/lib/federation';
 import { getGitHubBrainSource } from '@/lib/github-brains';
 import { prepareBrainMarkdown } from '@/lib/brain-markdown';
+import { getRelatedKnowledge } from '@/lib/related-knowledge';
 
 export const dynamic = 'force-dynamic';
 
@@ -26,6 +28,9 @@ export default async function BrainPage({ params }: BrainPageProps) {
 
   if (!brain || !source) notFound();
 
+  const currentUrl = `/brains/${encodeURIComponent(brainId)}${
+    slug.length ? `/${slug.map(encodeURIComponent).join('/')}` : ''
+  }`;
   const page = source.getPage(slug);
 
   if (!page) {
@@ -37,6 +42,7 @@ export default async function BrainPage({ params }: BrainPageProps) {
           brainId={brainId}
           brainLabel={brain.label}
           title={brain.label}
+          currentUrl={currentUrl}
           description={brain.scope}
           sourceType="github-brain"
         />
@@ -54,6 +60,12 @@ export default async function BrainPage({ params }: BrainPageProps) {
   const presentation = prepareBrainMarkdown(loaded.content);
   const toc = getTableOfContents(presentation.body);
   const title = presentation.title ?? page.data.title;
+  const related = await getRelatedKnowledge({
+    title,
+    currentUrl,
+    brainId,
+    limit: 8,
+  });
 
   return (
     <DocsPage toc={toc} className="kp-doc-page" breadcrumb={{ enabled: false }}>
@@ -61,6 +73,7 @@ export default async function BrainPage({ params }: BrainPageProps) {
         brainId={brainId}
         brainLabel={brain.label}
         title={title}
+        currentUrl={currentUrl}
         description={page.data.description}
         sourceType={page.data.sourceType}
         sourceRevision={page.data.sourceRevision}
@@ -70,6 +83,7 @@ export default async function BrainPage({ params }: BrainPageProps) {
       <DocsBody className="kp-doc-body">
         <Markdown>{presentation.body}</Markdown>
       </DocsBody>
+      <RelatedKnowledge items={related} />
     </DocsPage>
   );
 }
@@ -82,9 +96,7 @@ export async function generateMetadata({ params }: BrainPageProps): Promise<Meta
   ]);
 
   if (!brain || !source) {
-    return {
-      title: 'Nicht gefunden',
-    };
+    return { title: 'Nicht gefunden' };
   }
 
   const page = source.getPage(slug);
