@@ -54,9 +54,7 @@ export function createStatusExport(
 }
 
 export function statusExportFilename(generatedAt: string): string {
-  const timestamp = generatedAt
-    .replace(/\.\d{3}Z$/, 'Z')
-    .replace(/:/g, '-');
+  const timestamp = generatedAt.replace(/\.\d{3}Z$/, 'Z').replace(/:/g, '-');
 
   return `ratzeburg-ai-brain-status-v${STATUS_EXPORT_SCHEMA_VERSION}-${timestamp}.json`;
 }
