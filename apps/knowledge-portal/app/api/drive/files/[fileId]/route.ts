@@ -1,3 +1,4 @@
+import type { GoogleDrivePage } from 'fumadocs-google-drive';
 import { getDriveSource } from '@/lib/drive-source';
 import { getGoogleDriveAccessToken } from '@/lib/service-account';
 
@@ -6,7 +7,9 @@ const previewMimeTypes = new Set(['application/pdf', 'image/png', 'image/jpeg', 
 export async function GET(_request: Request, { params }: { params: Promise<{ fileId: string }> }) {
   const { fileId } = await params;
   const source = await getDriveSource();
-  const page = source.getPages().find((candidate) => candidate.data.driveFile.id === fileId);
+  const page = source
+    .getPages()
+    .find((candidate: { data: GoogleDrivePage }) => candidate.data.driveFile.id === fileId);
 
   if (!page) return new Response('Not found', { status: 404 });
 
