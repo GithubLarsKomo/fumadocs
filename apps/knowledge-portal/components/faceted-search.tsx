@@ -135,5 +135,5 @@ export function FacetedSearch({ sources }: FacetedSearchProps) {
 }
 
 function plainText(value: string): string {
-  return value.replace(/<\\/?mark>/gi, '');
+  return value.replace(/<\/?mark>/gi, '');
 }
