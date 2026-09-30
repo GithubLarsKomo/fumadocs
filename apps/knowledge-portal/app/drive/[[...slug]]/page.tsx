@@ -44,7 +44,9 @@ export default async function DrivePage({ params }: DrivePageProps) {
                   {root.description ? (
                     <span className="kp-drive-root-description">{root.description}</span>
                   ) : null}
-                  <span className="kp-home-card-arrow" aria-hidden="true">→</span>
+                  <span className="kp-home-card-arrow" aria-hidden="true">
+                    →
+                  </span>
                 </a>
               ))}
             </div>
