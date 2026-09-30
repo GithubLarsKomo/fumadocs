@@ -24,8 +24,7 @@ export function FacetedSearch({ sources }: FacetedSearchProps) {
   const [hasSearched, setHasSearched] = useState(false);
 
   const filteredSources = useMemo(
-    () =>
-      sources.filter((source) => sourceClass === 'all' || source.sourceClass === sourceClass),
+    () => sources.filter((source) => sourceClass === 'all' || source.sourceClass === sourceClass),
     [sources, sourceClass],
   );
 
@@ -106,7 +105,9 @@ export function FacetedSearch({ sources }: FacetedSearchProps) {
         {hasSearched ? (
           <span>{results.length} Treffer</span>
         ) : (
-          <span>Filter nach Authority und Quelle, ohne die Source-of-Truth-Grenzen zu verändern.</span>
+          <span>
+            Filter nach Authority und Quelle, ohne die Source-of-Truth-Grenzen zu verändern.
+          </span>
         )}
       </div>
 
