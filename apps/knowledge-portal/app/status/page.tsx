@@ -43,7 +43,9 @@ export default async function StatusPage() {
         ))}
       </section>
 
-      <p className="kp-health-time">Geprüft: {new Date(report.checkedAt).toLocaleString('de-DE')}</p>
+      <p className="kp-health-time">
+        Geprüft: {new Date(report.checkedAt).toLocaleString('de-DE')}
+      </p>
     </main>
   );
 }
