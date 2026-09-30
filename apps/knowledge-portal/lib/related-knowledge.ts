@@ -1,6 +1,8 @@
-import type { KnowledgeSearchResult } from '@/lib/search/knowledge-search';
-import { getGitHubBrainSource } from '@/lib/github-brains';
-import { searchKnowledge } from '@/lib/search/knowledge-search';
+import type { SortedResult } from 'fumadocs-core/search';
+import { createFromSource } from 'fumadocs-core/search/server';
+import { getDriveSource } from '@/lib/drive-source';
+import { getGitHubBrainSource, getRequiredGitHubBrainSource } from '@/lib/github-brains';
+import { searchBrainGraph } from '@/lib/search/brain-graph';
 
 export interface RelatedKnowledgeItem {
   title: string;
@@ -10,6 +12,9 @@ export interface RelatedKnowledgeItem {
   relation: 'backlink' | 'related';
 }
 
+const driveSearch = createFromSource(getDriveSource);
+const brainSearch = new Map<string, ReturnType<typeof createFromSource>>();
+
 export async function getRelatedKnowledge(options: {
   title: string;
   currentUrl: string;
@@ -17,31 +22,48 @@ export async function getRelatedKnowledge(options: {
   limit?: number;
 }): Promise<RelatedKnowledgeItem[]> {
   const limit = options.limit ?? 8;
-  const [backlinks, searchResults] = await Promise.all([
+
+  const [backlinks, sameSource, graph] = await Promise.all([
     options.brainId
-      ? findBrainBacklinks(options.brainId, options.currentUrl, Math.min(limit, 6))
+      ? findBrainBacklinks(options.brainId, options.currentUrl, Math.min(limit, 4))
       : Promise.resolve([]),
-    searchKnowledge(options.title, { limit: Math.max(limit * 2, 12) }).catch(() => []),
+    searchSameSource(options.title, options.brainId, Math.max(limit, 10)).catch(() => []),
+    searchBrainGraph(options.title, Math.max(limit, 10)).catch(() => []),
   ]);
+
+  const related: RelatedKnowledgeItem[] = [
+    ...sameSource.map((result) =>
+      resultToItem(result, options.brainId ? 'canonical' : 'evidence', options.brainId),
+    ),
+    ...graph.map((result) => resultToItem(result, 'derived', 'Adaptive Brain')),
+  ];
 
   const seen = new Set<string>([options.currentUrl]);
   const output: RelatedKnowledgeItem[] = [];
 
-  for (const item of backlinks) {
+  for (const item of [...backlinks, ...related]) {
     if (seen.has(item.url)) continue;
     seen.add(item.url);
     output.push(item);
-    if (output.length >= limit) return output;
-  }
-
-  for (const result of searchResults) {
-    if (seen.has(result.url)) continue;
-    seen.add(result.url);
-    output.push(searchResultToItem(result));
     if (output.length >= limit) break;
   }
 
   return output;
+}
+
+async function searchSameSource(
+  query: string,
+  brainId: string | undefined,
+  limit: number,
+): Promise<SortedResult[]> {
+  if (!brainId) return driveSearch.search(query, { limit });
+
+  let search = brainSearch.get(brainId);
+  if (!search) {
+    search = createFromSource(() => getRequiredGitHubBrainSource(brainId));
+    brainSearch.set(brainId, search);
+  }
+  return search.search(query, { limit });
 }
 
 async function findBrainBacklinks(
@@ -52,7 +74,7 @@ async function findBrainBacklinks(
   const source = await getGitHubBrainSource(brainId);
   if (!source) return [];
 
-  const pages = source.getPages().slice(0, 250);
+  const pages = source.getPages().slice(0, 80);
   const output: RelatedKnowledgeItem[] = [];
   let next = 0;
 
@@ -76,12 +98,12 @@ async function findBrainBacklinks(
           relation: 'backlink',
         });
       } catch {
-        // A single unreadable page must not suppress related knowledge.
+        // One unreadable page must not suppress the remaining related knowledge.
       }
     }
   }
 
-  await Promise.all(Array.from({ length: Math.min(6, pages.length) }, () => worker()));
+  await Promise.all(Array.from({ length: Math.min(4, pages.length) }, () => worker()));
   return output.slice(0, limit);
 }
 
@@ -89,12 +111,16 @@ export function containsPortalLink(markdown: string, url: string): boolean {
   return markdown.includes(`](${url})`) || markdown.includes(`](${url}#`);
 }
 
-function searchResultToItem(result: KnowledgeSearchResult): RelatedKnowledgeItem {
+function resultToItem(
+  result: SortedResult,
+  sourceClass: RelatedKnowledgeItem['sourceClass'],
+  sourceLabel?: string,
+): RelatedKnowledgeItem {
   return {
-    title: String(result.content),
+    title: String(result.content).replace(/<\/?mark>/gi, ''),
     url: result.url,
-    sourceClass: result.sourceClass,
-    sourceLabel: result.sourceLabel,
+    sourceClass,
+    sourceLabel: sourceLabel ?? 'Drive Evidence',
     relation: 'related',
   };
 }
