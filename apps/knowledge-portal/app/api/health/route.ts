@@ -1,8 +1,12 @@
 import { NextResponse } from 'next/server';
+import { getSourceHealth } from '@/lib/source-health';
 
-export function GET() {
+export const dynamic = 'force-dynamic';
+
+export async function GET() {
+  const report = await getSourceHealth();
   return NextResponse.json({
-    status: 'ok',
     service: 'knowledge-portal',
+    ...report,
   });
 }
