@@ -52,7 +52,7 @@ export async function getSourceHealth(): Promise<SourceHealthReport> {
 
     for (const root of roots) {
       const count = root.routePrefix
-        ? pages.filter((page) => page.slugs[0] === root.routePrefix).length
+        ? pages.filter((page: { slugs: string[] }) => page.slugs[0] === root.routePrefix).length
         : pages.length;
       sources.push({
         id: `drive:${root.routePrefix || root.id}`,
